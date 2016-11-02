@@ -20,7 +20,7 @@ public class MessageHandler {
      * @param port
      * @return
      */
-    public Response send(Message msg, String ip, long port){
+    public Response send(Message msg, String ip, int port){
         return null;
     }
 
@@ -28,12 +28,12 @@ public class MessageHandler {
      * Open the port and listen
      * @param port
      */
-    public void startListening(long port){
+    public void startListening(int port){
 
     }
 
     /**
-     * Close the port which is listening initiated by {@link #startListening(long)}
+     * Close the port which is listening initiated by {@link #startListening(int)}
      */
     public void stopListening(){
 

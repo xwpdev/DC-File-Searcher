@@ -6,6 +6,6 @@ package lk.ac.mrt.network;
 public class SearchMessage extends Message{
 
     public SearchMessage() {
-        this.type = MessageType.UNREGISTER;
+        this.type = MessageType.SEARCH;
     }
 }

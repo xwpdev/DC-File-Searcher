@@ -20,13 +20,22 @@ public class PropertyProvider {
     }
 
     public static String getProperty(String key, String defaultValue) {
-        if (prop == null) {
-            initProperties();
-        }
+        initProperties();
         return prop.getProperty(key, defaultValue);
     }
 
+    public static String listProperties(){
+        initProperties();
+        if(prop != null){
+            return prop.toString();
+        }
+        return null;
+    }
+
     private static void initProperties() {
+        if(prop != null){
+            return;
+        }
         prop = new Properties();
 
         InputStream input = null;

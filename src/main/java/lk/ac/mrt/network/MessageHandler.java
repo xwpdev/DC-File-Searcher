@@ -20,7 +20,7 @@ public class MessageHandler {
      * @param port
      * @return
      */
-    public Response send(Message msg, String ip, int port){
+    public Response send(Message msg){
         return null;
     }
 

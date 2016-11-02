@@ -1,7 +1,6 @@
 package lk.ac.mrt.routing;
 
 
-import com.sun.java.swing.plaf.windows.TMSchema;
 import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.*;
@@ -61,7 +60,7 @@ public class Router {
         unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send unregister message
-        messageHandler.send(unRegisterMessage,ip,port);
+        messageHandler.send(unRegisterMessage);
 
     }
 
@@ -72,7 +71,7 @@ public class Router {
         joinMessage = (JoinMessage) setCommonMessageProperties(joinMessage);
 
         // Send join message
-        messageHandler.send(joinMessage,ip,port);
+        messageHandler.send(joinMessage);
 
     }
 

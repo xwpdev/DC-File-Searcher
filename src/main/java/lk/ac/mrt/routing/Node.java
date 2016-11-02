@@ -16,5 +16,33 @@ public class Node {
         this.port = port;
     }
 
+    public Node(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
 
+
+    public int getNodeID() {
+        return nodeID;
+    }
+
+    public void setNodeID(int nodeID) {
+        this.nodeID = nodeID;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

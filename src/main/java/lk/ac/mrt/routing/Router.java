@@ -1,11 +1,14 @@
 package lk.ac.mrt.routing;
 
 
-import lk.ac.mrt.network.Message;
-import lk.ac.mrt.network.MessageHandler;
-import lk.ac.mrt.network.RegisterMessage;
+import com.sun.java.swing.plaf.windows.TMSchema;
+import lk.ac.mrt.common.NetworkUtil;
+import lk.ac.mrt.common.PropertyProvider;
+import lk.ac.mrt.network.*;
 
 /**
+ * Responsible for routing the messages between nodes and bootsrap server
+ *
  * Created by dinu on 11/2/16.
  */
 public class Router {
@@ -19,14 +22,64 @@ public class Router {
 
     public void register(String ip, int port){
 
+        //Create register message
+        RegisterMessage registerMessage = new RegisterMessage();
+        registerMessage = (RegisterMessage)setCommonMessageProperties(registerMessage);
+        registerMessage.setDestinationIP(PropertyProvider.getProperty("REG_IP"));
+        registerMessage.setDestinationPort(Integer.parseInt(PropertyProvider.getProperty("REG_PORT")));
+        registerMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
+
+        //Send register message
+        RegisterResponse registerResponse= (RegisterResponse) messageHandler.send(registerMessage);
+
+
+        int nodes = registerResponse.getNumberOfNodes();
+
+        switch(nodes){
+            case 2:
+            {
+                table.addNode(new Node(registerResponse.getIp2(), registerResponse.getPort2()));
+            }
+            case 1:
+            {
+                table.addNode(new Node(registerResponse.getIp1(), registerResponse.getPort1()));
+            }
+            default:
+            {
+
+            }
+        }
+
+
     }
 
     public void unregister(String ip, int port){
+
+        //Create unregister message
+        UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
+        unRegisterMessage = (UnRegisterMessage) setCommonMessageProperties(unRegisterMessage);
+        unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
+
+        //Send unregister message
+        messageHandler.send(unRegisterMessage,ip,port);
 
     }
 
     public void join(String ip, int port){
 
+        //Create join message
+        JoinMessage joinMessage = new JoinMessage();
+        joinMessage = (JoinMessage) setCommonMessageProperties(joinMessage);
+
+        // Send join message
+        messageHandler.send(joinMessage,ip,port);
+
+    }
+
+    public Message setCommonMessageProperties(Message message){
+        message.setSourceIP(NetworkUtil.getIP());
+        message.setSourcePort(Integer.parseInt(PropertyProvider.getProperty("PORT")));
+        return message;
     }
 
 

@@ -2,7 +2,15 @@ package lk.ac.mrt.network;
 
 
 public class MessageHandler {
-    //Make this class singleton
+
+    private static MessageHandler instance;
+
+    public static MessageHandler getInstance(){
+        if(instance == null){
+            instance = new MessageHandler();
+        }
+        return instance;
+    }
 
 
     /**

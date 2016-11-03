@@ -1,9 +1,10 @@
 package lk.ac.mrt.routing;
 
-
-import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.*;
+
+import java.util.*;
+
 
 /**
  * Responsible for routing the messages between nodes and bootsrap server
@@ -126,6 +127,25 @@ public class Router {
     private void flushData()
     {
         table.clearData();
+    }
+
+    public List<Node> getRandomNodes(int limit){
+        List<Node> nodeList = new ArrayList<>();
+        int max = table.getSize();
+        if (max <= limit){
+            for (int i = 0; i<=max; i++){
+                nodeList.add(table.getNode(i));
+            }
+        }else{
+            Random rand = new Random();
+            Set<Node> set = new HashSet<>();
+            while (set.size() < limit) {
+                int i = rand.nextInt(table.getSize());
+                set.add(table.getNode(i));
+            }
+            nodeList.addAll(set);
+        }
+        return nodeList;
     }
 
 

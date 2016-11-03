@@ -20,4 +20,12 @@ public class RoutingTable {
 
     public void clearData(){routingTable.clear();}
 
+    public int getSize(){
+        return routingTable.size();
+    }
+
+    public Node getNode(int index){
+        return routingTable.get(index);
+    }
+
 }

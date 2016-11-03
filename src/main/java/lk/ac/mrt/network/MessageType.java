@@ -11,4 +11,8 @@ public enum MessageType {
     MessageType(String typeCode) {
         this.typeCode = typeCode;
     }
+
+    public String code() {
+        return typeCode;
+    }
 }

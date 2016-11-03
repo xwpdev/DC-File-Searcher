@@ -5,6 +5,8 @@ package lk.ac.mrt.network;
  */
 public abstract class Message {
 
+    protected final static char WHITESPACE = ' ';
+
     protected MessageType type;
 
     private  String destinationIP;
@@ -13,6 +15,9 @@ public abstract class Message {
     private String sourceIP;
     private int sourcePort;
 
+    public abstract String marshall();
+
+    public abstract void unmarshall(String messsageData);
 
     public String getDestinationIP() {
         return destinationIP;
@@ -44,5 +49,21 @@ public abstract class Message {
 
     public void setSourcePort(int sourcePort) {
         this.sourcePort = sourcePort;
+    }
+
+    protected String appendAll(Object... obj){
+        if(obj == null || obj.length == 0){
+            return "";
+        }else{
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < obj.length; i++) {
+                if(i != 0) {
+                    sb.append(WHITESPACE);
+                }
+                sb.append( obj[i]);
+
+            }
+            return sb.toString();
+        }
     }
 }

@@ -9,8 +9,11 @@ import lk.ac.mrt.network.MessageType;
 import lk.ac.mrt.network.Response;
 import lk.ac.mrt.network.SearchMessage;
 import lk.ac.mrt.network.SearchResponse;
+import lk.ac.mrt.routing.Node;
+import lk.ac.mrt.routing.Router;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chamika on 11/3/2016.
@@ -20,6 +23,7 @@ public class SearchHandler
 	private static SearchHandler instance;
 
 	private FilesList filesList;
+	private Map<String,Message> messageMap;
 	private MessageHandler messageHandler;
 	private int maxHopCount;
 
@@ -35,24 +39,45 @@ public class SearchHandler
 	public SearchHandler()
 	{
 		initFilesList();
+		initMessageMap();
 		initSearching();
 	}
+
 
 	private void initSearching()
 	{
 		MessageHandler.getInstance().registerForReceiving( MessageType.SEARCH, new MessageListener()
 		{
 			@Override
-			public Response onMessageReceived( Message message )
-			{
-				SearchMessage searchMessage = ( SearchMessage ) message;
-				List<String> searchResults = SearchUtil.search( searchMessage.getKeyword(), filesList );
+			public Response onMessageReceived( Message message ) {
+				SearchMessage searchMessage = (SearchMessage) message;
 
-				//TODO forward to other nodes
-				if(searchResults != null && !searchResults.isEmpty() )
-				{
+				//Check for the duplicate message
+				String messageHash = creatHash(message.getSourceIP(), message.getSourcePort(), searchMessage.getKeyword());
+
+				if (!checkDupe(messageHash)) {
+					messageMap.put(messageHash, message);
+					int hopCount = searchMessage.getHopCount();
+
+					if (hopCount > 0) {
+
+						searchMessage.setHopCount(--hopCount);
+						//Forward message
+						List<Node> randomNodeList = new Router().getRandomNodes(4);
+						for (Node n : randomNodeList) {
+							//TODO Forward to each
+						}
+
+					} else {
+						//TODO Discard
+					}
+				}
+
+
+				List<String> searchResults = SearchUtil.search(searchMessage.getKeyword(), filesList);
+				if (searchResults != null && !searchResults.isEmpty()) {
 					SearchResponse response = new SearchResponse();
-					response.setResults( searchResults );
+					response.setResults(searchResults);
 					//TODO set destination ip port
 
 					return response;
@@ -61,6 +86,16 @@ public class SearchHandler
 				return null;
 			}
 		} );
+	}
+
+	private String creatHash(String sourceIP, int sourcePort, String keyword) {
+		return new StringBuilder(sourceIP).append(sourcePort).append(keyword).toString();
+	}
+
+	private boolean checkDupe(String hash) {
+
+		boolean isDupe = messageMap.containsKey(hash) ? true : false;
+		return isDupe;
 	}
 
 	private void initFilesList()
@@ -78,6 +113,11 @@ public class SearchHandler
 			String[] split = fileMethod.split( "," );
 			filesList = FileProvider.getRandomFileList( Integer.parseInt( split[1] ) );
 		}
+	}
+
+
+	private void initMessageMap() {
+		messageMap = new MessageMap().getMessageMap();
 	}
 
 	public void initiateSearch( String keyword )

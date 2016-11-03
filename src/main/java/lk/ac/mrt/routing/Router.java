@@ -20,7 +20,23 @@ public class Router {
         messageHandler = MessageHandler.getInstance();
     }
 
-    public void register(String ip, int port){
+    public void initListner(){
+        MessageHandler.getInstance().registerForReceiving(MessageType.JOIN, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                JoinMessage joinMessage = (JoinMessage) message;
+                Node node = new Node(joinMessage.getSourceIP(), joinMessage.getSourcePort());
+                table.addNode(node);
+
+                JoinResponse joinResponse = new JoinResponse();
+                joinResponse.setValue(0);
+                return joinResponse;
+            }
+        });
+
+    }
+
+    public void register(){
 
         //Create register message
         RegisterMessage registerMessage = new RegisterMessage();
@@ -52,7 +68,7 @@ public class Router {
 
     }
 
-    public void unregister(String ip, int port){
+    public void unregister(){
 
         //Create unregister message
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
@@ -76,7 +92,7 @@ public class Router {
 
     }
 
-    public void join(String ip, int port){
+    public void join(){
 
         //Create join message
         JoinMessage joinMessage = new JoinMessage();
@@ -147,6 +163,7 @@ public class Router {
         }
         return nodeList;
     }
+
 
 
 

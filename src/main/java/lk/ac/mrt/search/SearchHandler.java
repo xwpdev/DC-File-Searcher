@@ -62,7 +62,7 @@ public class SearchHandler
 					if (hopCount > 0) {
 
 						searchMessage.setHopCount(--hopCount);
-						//Forward
+						//Forward message
 						List<Node> randomNodeList = new Router().getRandomNodes(4);
 						for (Node n : randomNodeList) {
 							//TODO Forward to each

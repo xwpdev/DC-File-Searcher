@@ -12,7 +12,7 @@ public class MessageMap {
 
     private Map<String, Message> messageMap;
 
-    public MessageMap() {
+    public MessageMap(){
         this.messageMap = new HashMap<String, Message>();
     }
 

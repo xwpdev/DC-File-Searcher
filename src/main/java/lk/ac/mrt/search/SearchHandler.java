@@ -63,7 +63,7 @@ public class SearchHandler
 
 						searchMessage.setHopCount(--hopCount);
 						//Forward
-						List<Node> randomNodeList = Router.getRandomNodes(4);
+						List<Node> randomNodeList = new Router().getRandomNodes(4);
 						for (Node n : randomNodeList) {
 							//TODO Forward to each
 						}

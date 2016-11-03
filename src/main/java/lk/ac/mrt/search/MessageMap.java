@@ -10,10 +10,10 @@ import java.util.Map;
  */
 public class MessageMap {
 
-    private Map<String,Message> messageMap;
+    private Map<String, Message> messageMap;
 
     public MessageMap() {
-        this.messageMap = new HashMap<String,Message>();
+        this.messageMap = new HashMap<String, Message>();
     }
 
     public Map<String, Message> getMessageMap() {
@@ -23,8 +23,6 @@ public class MessageMap {
     public void setMessageMap(Map<String, Message> messageMap) {
         this.messageMap = messageMap;
     }
-
-
 
 
 }

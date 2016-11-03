@@ -16,7 +16,7 @@ public class Router {
     MessageHandler messageHandler;
     RoutingTable table;
 
-    Router(){
+    public Router(){
         messageHandler = MessageHandler.getInstance();
     }
 

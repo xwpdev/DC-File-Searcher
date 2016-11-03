@@ -4,8 +4,8 @@ import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.HashMap;
 
 public class MessageHandler {
 
@@ -15,6 +15,8 @@ public class MessageHandler {
     private String localIP;
     private int localPort;
     private boolean initialized;
+    private UdpListener udpListener;
+    private HashMap<MessageType, MessageListener> registeredListeners = new HashMap<>();
 
     public static MessageHandler getInstance() {
         if (instance == null) {
@@ -94,7 +96,7 @@ public class MessageHandler {
         return null;
     }
 
-    private Response handleResponse(String responseLine) {
+    public static Response handleResponse(String responseLine) {
         int length = Integer.parseInt(responseLine.substring(0, MSG_LENGTH));
         int startIndex = MSG_LENGTH + 1;
         String unmarshallText = responseLine.substring(startIndex, length);
@@ -130,25 +132,61 @@ public class MessageHandler {
         return response;
     }
 
+    public static Message handleMessage(String messageLine) {
+        int length = Integer.parseInt(messageLine.substring(0, MSG_LENGTH));
+        int startIndex = MSG_LENGTH + 1;
+        String unmarshallText = messageLine.substring(startIndex, length);
+
+        Message message = null;
+        if (unmarshallText.startsWith(MessageType.REGISTER.code())) {
+            message = new RegisterMessage();
+        } else if (unmarshallText.startsWith(MessageType.UNREGISTER.code())) {
+            message = new UnRegisterMessage();
+        } else if (unmarshallText.startsWith(MessageType.JOIN.code())) {
+            message = new JoinMessage();
+        } else if (unmarshallText.startsWith(MessageType.LEAVE.code())) {
+            message = new LeaveMessage();
+        } else if (unmarshallText.startsWith(MessageType.SEARCH.code())) {
+            message = new SearchMessage();
+        }
+
+        if (message != null) {
+            try {
+                message.unmarshall(unmarshallText);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return message;
+    }
+
     /**
      * Open the port and listen
      *
      * @param port
      */
     public void startListening(int port) {
+        if (udpListener == null) {
+            udpListener = new UdpListener();
+            udpListener.setLocalPort(localPort);
+        }
 
+        udpListener.start();
     }
 
     /**
      * Close the port which is listening initiated by {@link #startListening(int)}
      */
     public void stopListening() {
-
+        if(udpListener != null){
+            udpListener.setRunning(false);
+        }
     }
 
 
     public void registerForReceiving(MessageType type, MessageListener listener) {
-
+        registeredListeners.put(type,listener);
     }
 
     public void setLocalDetails(Message message) {
@@ -160,9 +198,13 @@ public class MessageHandler {
         }
     }
 
-    private static String prepareForSending(Entity entity) {
+    public static String prepareForSending(Entity entity) {
         String txt = entity.marshall();
         return String.format("%04d %s", txt.length() + 5, txt);
+    }
+
+    public MessageListener getListener(MessageType type){
+        return registeredListeners.get(type);
     }
 
 }

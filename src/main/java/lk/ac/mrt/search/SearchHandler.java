@@ -24,7 +24,6 @@ public class SearchHandler
 
 	private FilesList filesList;
 	private Map<String,Message> messageMap;
-	private MessageHandler messageHandler;
 	private int maxHopCount;
 
 	public static SearchHandler getInstance()
@@ -78,7 +77,10 @@ public class SearchHandler
 				if (searchResults != null && !searchResults.isEmpty()) {
 					SearchResponse response = new SearchResponse();
 					response.setResults(searchResults);
-					//TODO set destination ip port
+					//set destination ip port
+					response.setDestinationIP(searchMessage.getSourceIP());
+					response.setDestinationPort(searchMessage.getSourcePort());
+					MessageHandler.getInstance().setLocalDetails(message);
 
 					return response;
 				}

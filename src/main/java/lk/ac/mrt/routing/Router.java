@@ -16,11 +16,11 @@ public class Router {
     MessageHandler messageHandler;
     RoutingTable table;
 
-    Router(){
+    public Router() {
         messageHandler = MessageHandler.getInstance();
     }
 
-    public void initListner(){
+    public void initListner() {
         MessageHandler.getInstance().registerForReceiving(MessageType.JOIN, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
@@ -36,7 +36,7 @@ public class Router {
 
     }
 
-    public void register(){
+    public void register() {
 
         //Create register message
         RegisterMessage registerMessage = new RegisterMessage();
@@ -46,29 +46,28 @@ public class Router {
         registerMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send register message
-        RegisterResponse registerResponse= (RegisterResponse) messageHandler.send(registerMessage);
+        RegisterResponse registerResponse = (RegisterResponse) messageHandler.send(registerMessage);
 
         //Handle response
         int nodes = registerResponse.getNumberOfNodes();
 
-        switch(nodes){
-            case 2:
-            {
+        switch (nodes) {
+            case 2: {
                 table.addNode(new Node(registerResponse.getIp2(), registerResponse.getPort2()));
             }
-            case 1:
-            {
+            case 1: {
                 table.addNode(new Node(registerResponse.getIp1(), registerResponse.getPort1()));
             }
-            default:
-            {
+            default: {
                 //do nothing
             }
         }
 
+        System.out.println("Successfully Registered");
+
     }
 
-    public void unregister(){
+    public void unregister() {
 
         //Create unregister message
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
@@ -80,23 +79,25 @@ public class Router {
 
         //Handle unregister response
         int value = unRegisterResponse.getValue();
-        if ( value == 0){
+        if (value == 0) {
             System.out.println("Successfully Unregistered");
             flushData();
-        }else if (value == 9999){
+        } else if (value == 9999) {
             System.out.println("Error while unregistering. IP and port may not be in the registry or command is incorrect");
-        }else{
+        } else {
             System.out.println("Unhandled value");
         }
 
 
     }
 
-    public void join(){
+    public void join(Node node) {
 
         //Create join message
         JoinMessage joinMessage = new JoinMessage();
         setCommonMessageProperties(joinMessage);
+        joinMessage.setDestinationIP(node.getIp());
+        joinMessage.setDestinationPort(node.getPort());
 
         // Send join message
         JoinResponse joinResponse = (JoinResponse) messageHandler.send(joinMessage);
@@ -104,21 +105,21 @@ public class Router {
         // Handle join response
         int value = joinResponse.getValue();
 
-        if (value == 0){
+        if (value == 0) {
             System.out.println("Successfully Joined");
-            table.addNode(new Node(joinMessage.getDestinationIP(),joinMessage.getDestinationPort()));
-        }else if (value == 9999){
+            table.addNode(new Node(joinMessage.getDestinationIP(), joinMessage.getDestinationPort()));
+        } else if (value == 9999) {
             System.out.println("error while adding new node to routing table");
-        }else{
+        } else {
             System.out.println("Unhandled value");
         }
 
     }
 
-    public void leave(){
+    public void leave() {
 
         //Create leave message
-        LeaveMessage leaveMessage =new LeaveMessage();
+        LeaveMessage leaveMessage = new LeaveMessage();
         setCommonMessageProperties(leaveMessage);
 
         // Send jLeave message
@@ -127,32 +128,31 @@ public class Router {
         // Handle join response
         int value = leaveResponse.getValue();
 
-        if (value == 0){
+        if (value == 0) {
             System.out.println("Successfully Joined");
-        }else if (value == 9999){
+        } else if (value == 9999) {
             System.out.println("Leave Failed");
-        }else{
+        } else {
             System.out.println("Unhandled value");
         }
     }
 
-    private void setCommonMessageProperties(Message message){
-       	messageHandler.setLocalDetails( message );
+    private void setCommonMessageProperties(Message message) {
+        messageHandler.setLocalDetails(message);
     }
 
-    private void flushData()
-    {
+    private void flushData() {
         table.clearData();
     }
 
-    public List<Node> getRandomNodes(int limit){
+    public List<Node> getRandomNodes(int limit) {
         List<Node> nodeList = new ArrayList<>();
         int max = table.getSize();
-        if (max <= limit){
-            for (int i = 0; i<=max; i++){
+        if (max <= limit) {
+            for (int i = 0; i <= max; i++) {
                 nodeList.add(table.getNode(i));
             }
-        }else{
+        } else {
             Random rand = new Random();
             Set<Node> set = new HashSet<>();
             while (set.size() < limit) {
@@ -162,6 +162,12 @@ public class Router {
             nodeList.addAll(set);
         }
         return nodeList;
+    }
+
+    public void printRoutingTable(){
+        for (int i = 0; i < table.getSize() ; i++) {
+            System.out.println(""+table.getNode(i).getIp()+"                "+table.getNode(i).getPort());
+        }
     }
 
 

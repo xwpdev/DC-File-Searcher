@@ -8,6 +8,9 @@ import lk.ac.mrt.network.MessageListener;
 import lk.ac.mrt.network.MessageType;
 import lk.ac.mrt.network.Response;
 import lk.ac.mrt.network.SearchMessage;
+import lk.ac.mrt.network.SearchResponse;
+
+import java.util.List;
 
 /**
  * Created by chamika on 11/3/2016.
@@ -42,6 +45,18 @@ public class SearchHandler
 			@Override
 			public Response onMessageReceived( Message message )
 			{
+				SearchMessage searchMessage = ( SearchMessage ) message;
+				List<String> searchResults = SearchUtil.search( searchMessage.getKeyword(), filesList );
+
+				//TODO forward to other nodes
+				if(searchResults != null && !searchResults.isEmpty() )
+				{
+					SearchResponse response = new SearchResponse();
+					response.setResults( searchResults );
+					//TODO set destination ip port
+
+					return response;
+				}
 
 				return null;
 			}

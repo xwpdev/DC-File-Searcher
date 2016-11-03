@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class SearchUtil {
 
-    public List<String> search(String query, FilesList list){
+    public static List<String> search(String query, FilesList list){
         //TODO: implment search comparison logic here
         return list.getFileNames();
     }

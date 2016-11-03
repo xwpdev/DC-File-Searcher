@@ -16,4 +16,15 @@ public class LeaveResponse extends Response {
     public void setValue(int value) {
         this.value = value;
     }
+
+    @Override
+    public String marshall() {
+        return appendAll(type.code(), getValue());
+    }
+
+    @Override
+    public void unmarshall(String messsageData) {
+        String[] splits = messsageData.split(String.valueOf(WHITESPACE));
+        setValue(Integer.parseInt(splits[1]));
+    }
 }

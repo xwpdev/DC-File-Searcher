@@ -11,4 +11,8 @@ public enum ResponseType {
     ResponseType(String typeCode) {
         this.typeCode = typeCode;
     }
+
+    public String code() {
+        return typeCode;
+    }
 }

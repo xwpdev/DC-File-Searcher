@@ -54,4 +54,19 @@ public class RegisterResponse extends Response {
     public void setPort2(int port2) {
         this.port2 = port2;
     }
+
+    @Override
+    public String marshall() {
+        return appendAll(type.code(), getNumberOfNodes(), getIp1(), getPort1(), getIp2(), getPort2());
+    }
+
+    @Override
+    public void unmarshall(String messsageData) {
+        String[] splits = messsageData.split(String.valueOf(WHITESPACE));
+        setNumberOfNodes(Integer.parseInt(splits[1]));
+        setIp1(splits[2]);
+        setPort1(Integer.parseInt(splits[3]));
+        setIp2(splits[4]);
+        setPort2(Integer.parseInt(splits[5]));
+    }
 }

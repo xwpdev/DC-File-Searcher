@@ -20,4 +20,14 @@ public class SearchResponse extends Response{
 	{
 		this.results = results;
 	}
+
+	@Override
+	public String marshall() {
+		return null;
+	}
+
+	@Override
+	public void unmarshall(String messsageData) {
+
+	}
 }

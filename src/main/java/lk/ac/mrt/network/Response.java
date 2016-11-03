@@ -6,4 +6,5 @@ package lk.ac.mrt.network;
 public abstract class Response extends Entity {
 
     protected ResponseType type;
+
 }

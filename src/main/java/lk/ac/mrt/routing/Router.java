@@ -1,11 +1,10 @@
 package lk.ac.mrt.routing;
 
-
-import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.*;
 
-import java.util.List;
+import java.util.*;
+
 
 /**
  * Responsible for routing the messages between nodes and bootsrap server
@@ -21,7 +20,23 @@ public class Router {
         messageHandler = MessageHandler.getInstance();
     }
 
-    public void register(String ip, int port){
+    public void initListner(){
+        MessageHandler.getInstance().registerForReceiving(MessageType.JOIN, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                JoinMessage joinMessage = (JoinMessage) message;
+                Node node = new Node(joinMessage.getSourceIP(), joinMessage.getSourcePort());
+                table.addNode(node);
+
+                JoinResponse joinResponse = new JoinResponse();
+                joinResponse.setValue(0);
+                return joinResponse;
+            }
+        });
+
+    }
+
+    public void register(){
 
         //Create register message
         RegisterMessage registerMessage = new RegisterMessage();
@@ -53,7 +68,7 @@ public class Router {
 
     }
 
-    public void unregister(String ip, int port){
+    public void unregister(){
 
         //Create unregister message
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
@@ -77,7 +92,7 @@ public class Router {
 
     }
 
-    public void join(String ip, int port){
+    public void join(){
 
         //Create join message
         JoinMessage joinMessage = new JoinMessage();
@@ -130,10 +145,27 @@ public class Router {
         table.clearData();
     }
 
-
-    public static List<Node> getRandomNodes(int i) {
-        //TODO return random nodes
-        return null;
+    public List<Node> getRandomNodes(int limit){
+        List<Node> nodeList = new ArrayList<>();
+        int max = table.getSize();
+        if (max <= limit){
+            for (int i = 0; i<=max; i++){
+                nodeList.add(table.getNode(i));
+            }
+        }else{
+            Random rand = new Random();
+            Set<Node> set = new HashSet<>();
+            while (set.size() < limit) {
+                int i = rand.nextInt(table.getSize());
+                set.add(table.getNode(i));
+            }
+            nodeList.addAll(set);
+        }
+        return nodeList;
     }
+
+
+
+
 }
 

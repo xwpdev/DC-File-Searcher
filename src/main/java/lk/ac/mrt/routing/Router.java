@@ -5,6 +5,8 @@ import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.*;
 
+import java.util.List;
+
 /**
  * Responsible for routing the messages between nodes and bootsrap server
  *
@@ -129,6 +131,9 @@ public class Router {
     }
 
 
-
+    public static List<Node> getRandomNodes(int i) {
+        //TODO return random nodes
+        return null;
+    }
 }
 

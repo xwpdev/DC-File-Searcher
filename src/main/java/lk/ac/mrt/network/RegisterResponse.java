@@ -5,11 +5,11 @@ package lk.ac.mrt.network;
  */
 public class RegisterResponse extends Response {
 
-    int numberOfNodes;
-    String ip1;
-    int port1;
-    String ip2;
-    int port2;
+    private int numberOfNodes;
+    private String ip1;
+    private int port1;
+    private String ip2;
+    private int port2;
 
     public RegisterResponse() {
         this.type = ResponseType.REGISTER;

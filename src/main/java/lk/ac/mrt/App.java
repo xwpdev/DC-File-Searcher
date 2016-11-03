@@ -29,8 +29,16 @@ public class App
             case 1:
                 handleRegister();
                 break;
-            case2:
+            case 2:
                 handleUnregister();
+                break;
+            case 3:
+                handleLeave();
+                break;
+            case 4:
+                printRoutingTable();
+                break;
+            default:
 
         }
 

@@ -118,23 +118,30 @@ public class Router {
 
     public void leave() {
 
-        //Create leave message
-        LeaveMessage leaveMessage = new LeaveMessage();
-        setCommonMessageProperties(leaveMessage);
+        for (int i = 0; i < table.getSize(); i++) {
+            //Create leave message
+            LeaveMessage leaveMessage = new LeaveMessage();
+            setCommonMessageProperties(leaveMessage);
+            leaveMessage.setDestinationIP(table.getNode(i).getIp());
+            leaveMessage.setDestinationPort(table.getNode(i).getPort());
 
-        // Send jLeave message
-        LeaveResponse leaveResponse = (LeaveResponse) messageHandler.send(leaveMessage);
 
-        // Handle join response
-        int value = leaveResponse.getValue();
+            // Send jLeave message
+            LeaveResponse leaveResponse = (LeaveResponse) messageHandler.send(leaveMessage);
 
-        if (value == 0) {
-            System.out.println("Successfully Joined");
-        } else if (value == 9999) {
-            System.out.println("Leave Failed");
-        } else {
-            System.out.println("Unhandled value");
+            // Handle join response
+            int value = leaveResponse.getValue();
+
+            if (value == 0) {
+                System.out.println("Successfully Joined");
+            } else if (value == 9999) {
+                System.out.println("Leave Failed");
+            } else {
+                System.out.println("Unhandled value");
+            }
         }
+
+
     }
 
     private void setCommonMessageProperties(Message message) {

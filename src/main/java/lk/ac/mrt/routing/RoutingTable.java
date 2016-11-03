@@ -18,4 +18,6 @@ public class RoutingTable {
         routingTable.remove(node);
     }
 
+    public void clearData(){routingTable.clear();}
+
 }

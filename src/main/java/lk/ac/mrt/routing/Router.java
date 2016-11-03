@@ -31,7 +31,7 @@ public class Router {
         //Send register message
         RegisterResponse registerResponse= (RegisterResponse) messageHandler.send(registerMessage);
 
-
+        //Handle response
         int nodes = registerResponse.getNumberOfNodes();
 
         switch(nodes){
@@ -45,10 +45,9 @@ public class Router {
             }
             default:
             {
-
+                //do nothing
             }
         }
-
 
     }
 
@@ -60,7 +59,19 @@ public class Router {
         unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send unregister message
-        messageHandler.send(unRegisterMessage);
+        UnRegisterResponse unRegisterResponse = (UnRegisterResponse) messageHandler.send(unRegisterMessage);
+
+        //Handle unregister response
+        int value = unRegisterResponse.getValue();
+        if ( value == 0){
+            System.out.println("Successfully Unregistered");
+            flushData();
+        }else if (value == 9999){
+            System.out.println("Error while unregistering. IP and port may not be in the registry or command is incorrect");
+        }else{
+            System.out.println("Unhandled value");
+        }
+
 
     }
 
@@ -71,12 +82,50 @@ public class Router {
         setCommonMessageProperties(joinMessage);
 
         // Send join message
-        messageHandler.send(joinMessage);
+        JoinResponse joinResponse = (JoinResponse) messageHandler.send(joinMessage);
 
+        // Handle join response
+        int value = joinResponse.getValue();
+
+        if (value == 0){
+            System.out.println("Successfully Joined");
+            table.addNode(new Node(joinMessage.getDestinationIP(),joinMessage.getDestinationPort()));
+        }else if (value == 9999){
+            System.out.println("error while adding new node to routing table");
+        }else{
+            System.out.println("Unhandled value");
+        }
+
+    }
+
+    public void leave(){
+
+        //Create leave message
+        LeaveMessage leaveMessage =new LeaveMessage();
+        setCommonMessageProperties(leaveMessage);
+
+        // Send jLeave message
+        LeaveResponse leaveResponse = (LeaveResponse) messageHandler.send(leaveMessage);
+
+        // Handle join response
+        int value = leaveResponse.getValue();
+
+        if (value == 0){
+            System.out.println("Successfully Joined");
+        }else if (value == 9999){
+            System.out.println("Leave Failed");
+        }else{
+            System.out.println("Unhandled value");
+        }
     }
 
     private void setCommonMessageProperties(Message message){
        	messageHandler.setLocalDetails( message );
+    }
+
+    private void flushData()
+    {
+        table.clearData();
     }
 
 

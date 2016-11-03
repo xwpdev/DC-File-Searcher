@@ -13,11 +13,22 @@ import java.util.*;
  */
 public class Router {
 
+    private static Router instance;
+
     MessageHandler messageHandler;
     RoutingTable table;
 
     public Router() {
         messageHandler = MessageHandler.getInstance();
+    }
+
+    public static Router getInstance()
+    {
+        if ( instance == null )
+        {
+            instance = new Router();
+        }
+        return instance;
     }
 
     public void initListner() {

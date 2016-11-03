@@ -47,7 +47,7 @@ public class App
     }
 
     private static void handleRegister(){
-        Router router = new Router();
+        Router router = Router.getInstance();
         router.register();
         //two random nodes join
         List<Node> nodeList = router.getRandomNodes(2);
@@ -58,18 +58,18 @@ public class App
     }
 
     private static void handleUnregister(){
-        Router router = new Router();
+        Router router = Router.getInstance();
         router.unregister();
     }
 
     private static void handleLeave(){
-        Router router = new Router();
+        Router router = Router.getInstance();
         router.leave();
     }
 
     private static void printRoutingTable(){
-        Router router = new Router();
-        System.out.println("======================Routing Table====================================");
+        Router router = Router.getInstance();
+        System.out.println("======================Rout1ing Table====================================");
         router.printRoutingTable();
     }
 

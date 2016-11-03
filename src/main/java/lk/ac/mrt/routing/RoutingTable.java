@@ -2,6 +2,7 @@ package lk.ac.mrt.routing;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stores the routing table data
@@ -27,5 +28,6 @@ public class RoutingTable {
     public Node getNode(int index){
         return routingTable.get(index);
     }
+
 
 }

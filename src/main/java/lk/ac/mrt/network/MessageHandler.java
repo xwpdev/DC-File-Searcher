@@ -1,9 +1,15 @@
 package lk.ac.mrt.network;
 
+import lk.ac.mrt.common.NetworkUtil;
+import lk.ac.mrt.common.PropertyProvider;
 
 public class MessageHandler {
 
     private static MessageHandler instance;
+
+	private String localIP;
+	private int localPort;
+	private boolean initialized;
 
     public static MessageHandler getInstance(){
         if(instance == null){
@@ -12,8 +18,16 @@ public class MessageHandler {
         return instance;
     }
 
+	public MessageHandler(  ) {
+		this.localIP = NetworkUtil.getIP();
+		this.localPort = Integer.parseInt( PropertyProvider.getProperty("PORT"));
+		if(localIP != null && !localIP.isEmpty() && localPort > 0)
+		{
+			initialized = true;
+		}
+	}
 
-    /**
+	/**
      * Send a message through UDP and get the response
      * @param msg
      * @param ip
@@ -44,5 +58,14 @@ public class MessageHandler {
 
     }
 
+    public void setLocalDetails(Message message){
+		if(initialized)
+		{
+			message.setSourceIP( localIP );
+			message.setSourcePort( localPort );
+		}else{
+			new Exception( "Network IP or port not initialized" ).printStackTrace();
+		}
+	}
 
 }

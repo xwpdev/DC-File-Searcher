@@ -23,7 +23,7 @@ public class Router {
 
         //Create register message
         RegisterMessage registerMessage = new RegisterMessage();
-        registerMessage = (RegisterMessage)setCommonMessageProperties(registerMessage);
+        setCommonMessageProperties(registerMessage);
         registerMessage.setDestinationIP(PropertyProvider.getProperty("REG_IP"));
         registerMessage.setDestinationPort(Integer.parseInt(PropertyProvider.getProperty("REG_PORT")));
         registerMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
@@ -56,7 +56,7 @@ public class Router {
 
         //Create unregister message
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
-        unRegisterMessage = (UnRegisterMessage) setCommonMessageProperties(unRegisterMessage);
+        setCommonMessageProperties(unRegisterMessage);
         unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send unregister message
@@ -68,17 +68,15 @@ public class Router {
 
         //Create join message
         JoinMessage joinMessage = new JoinMessage();
-        joinMessage = (JoinMessage) setCommonMessageProperties(joinMessage);
+        setCommonMessageProperties(joinMessage);
 
         // Send join message
         messageHandler.send(joinMessage);
 
     }
 
-    public Message setCommonMessageProperties(Message message){
-        message.setSourceIP(NetworkUtil.getIP());
-        message.setSourcePort(Integer.parseInt(PropertyProvider.getProperty("PORT")));
-        return message;
+    private void setCommonMessageProperties(Message message){
+       	messageHandler.setLocalDetails( message );
     }
 
 

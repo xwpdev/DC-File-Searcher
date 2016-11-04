@@ -24,28 +24,38 @@ public class App
 
 
         Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
 
-        switch (choice){
-            case 1:
-                handleRegister();
-                break;
-            case 2:
-                handleUnregister();
-                break;
-            case 3:
-                handleLeave();
-                break;
-            case 4:
-                printRoutingTable();
-                break;
-            default:
+		int choice;
+		do{
+			choice = scanner.nextInt();
+			try
+			{
+				switch ( choice )
+				{
+					case 1:
+						handleRegister();
+						break;
+					case 2:
+						handleUnregister();
+						break;
+					case 3:
+						handleLeave();
+						break;
+					case 4:
+						printRoutingTable();
+						break;
+					default:
 
-        }
+				}
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+			}
 
-
-
-    }
+		}while(choice != 0);
+		System.out.println("Exit");
+	}
 
     private static void handleRegister(){
         Router router = Router.getInstance();
@@ -93,6 +103,7 @@ public class App
         System.out.println("2. Unregister");
         System.out.println("3. Leave");
         System.out.println("4. Print Routing Table");
+        System.out.println("0. Exit");
         System.out.println("=======================================================================");
         System.out.println("Choose the number of your choice or press 0 to exit menu");
         System.out.println("=======================================================================");

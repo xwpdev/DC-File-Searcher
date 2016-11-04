@@ -97,7 +97,7 @@ public class App
 		MessageHandler.getInstance().startListening();
 
 		// AHESH send UDP message
-		MessageHandler.getInstance().sendUDPMsg("10.10.10.132",8080,"TEST UDP MESSAGE");
+//		MessageHandler.getInstance().sendUDPMsg("10.10.10.132",8080,"TEST UDP MESSAGE");
 
 	}
 

@@ -20,7 +20,7 @@ public class MessageHandler {
     private int localPort;
     private boolean initialized;
     private UdpListener udpListener;
-    private HashMap<MessageType, MessageListener> registeredListeners = new HashMap<>();
+    private HashMap<String, MessageListener> registeredListeners = new HashMap<>();
 
     private DatagramSocket datagramSocket;
 
@@ -257,7 +257,7 @@ public class MessageHandler {
             message = new JoinMessage();
         } else if (unmarshallText.startsWith(MessageType.LEAVE.code())) {
             message = new LeaveMessage();
-        } else if (unmarshallText.startsWith(MessageType.SEARCH.code())) {
+        } else if (unmarshallText.startsWith(MessageType.SEARCH.code()) && !unmarshallText.startsWith(ResponseType.SEARCH.code())) {
             message = new SearchMessage();
         }
 
@@ -300,7 +300,11 @@ public class MessageHandler {
 
 
     public void registerForReceiving(MessageType type, MessageListener listener) {
-        registeredListeners.put(type,listener);
+        registeredListeners.put(type.code(),listener);
+    }
+
+    public void registerForReceiving(ResponseType type, MessageListener listener) {
+        registeredListeners.put(type.code(),listener);
     }
 
     public void setLocalDetails(Message message) {
@@ -327,7 +331,11 @@ public class MessageHandler {
     }
 
     public MessageListener getListener(MessageType type){
-        return registeredListeners.get(type);
+        return registeredListeners.get(type.code());
+    }
+
+    public MessageListener getListener(ResponseType type){
+        return registeredListeners.get(type.code());
     }
 
     public DatagramSocket getDatagramSocket() {

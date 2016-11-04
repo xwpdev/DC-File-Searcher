@@ -24,18 +24,34 @@ public class SearchResponse extends Response{
 		this.results = results;
 	}
 
+	public int getNoOfFiles() {
+		return noOfFiles;
+	}
+
+	public void setNoOfFiles(int noOfFiles) {
+		this.noOfFiles = noOfFiles;
+	}
+
+	public int getHops() {
+		return hops;
+	}
+
+	public void setHops(int hops) {
+		this.hops = hops;
+	}
+
 	@Override
 	public String marshall() {
 		//length SEROK no_files IP port hops filename1 filename2 ... ...
-		String appendAll = appendAll(noOfFiles, getSourceIP(), getSourcePort(), hops);
+		String appendAll = appendAll(type.code(), noOfFiles, getSourceIP(), getSourcePort(), hops);
 		StringBuilder sb =new StringBuilder(appendAll);
 		if(results != null) {
 			for (String result : results) {
 				sb.append(WHITESPACE);
-				sb.append(result);
+				sb.append(result.replace(' ','_'));
 			}
 		}
-		return appendAll;
+		return sb.toString();
 	}
 
 	@Override
@@ -50,7 +66,12 @@ public class SearchResponse extends Response{
 		results = new ArrayList<>();
 		i++;
 		for (; i < split.length; i++) {
-			results.add(split[i]);
+			results.add(split[i].replace('_',' '));
 		}
+	}
+
+	public void printResult(){
+		System.out.println("Fount results from:" + getSourceIP() +":" + getSourcePort());
+		System.out.println(results);
 	}
 }

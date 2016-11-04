@@ -85,11 +85,18 @@ public class SearchHandler
 					//set destination ip port
 					response.setDestinationIP(searchMessage.getSourceIP());
 					response.setDestinationPort(searchMessage.getSourcePort());
+					response.setHops(((SearchMessage) message).getHopCount());
+					response.setNoOfFiles(searchResults.size());
 					MessageHandler.getInstance().setLocalDetails(response);
 
 					return response;
 				}
 
+				return null;
+			}
+
+			@Override
+			public Response onResponseReceived(Response response) {
 				return null;
 			}
 		} );

@@ -38,19 +38,28 @@ public class UdpListener extends Thread {
                     int length = Integer.parseInt(msg.substring(0, MessageHandler.MSG_LENGTH));
 
                     Message message= MessageHandler.getInstance().handleMessage(msg.substring(0, length));
+                    if(message == null){
+                        // Response. (like search result)
+                        Response response = MessageHandler.getInstance().handleResponse(msg.substring(0, length));
+                        MessageListener listener = MessageHandler.getInstance().getListener(response.type);
+                        if(listener != null){
+                            listener.onResponseReceived(response);
+                        }
+                    }
+                    else {
+                        MessageListener listener = MessageHandler.getInstance().getListener(message.type);
 
-                    MessageListener listener = MessageHandler.getInstance().getListener(message.type);
-
-                    if(listener == null){
-                        // do nothing. No need of responding
-                    }else{
-                        Response response = listener.onMessageReceived(message);
-                        if( response != null) {
-                            String finalString = MessageHandler.prepareForSending(response);
-                            MessageHandler.getInstance().sendUDPMsg(response.getDestinationIP(),response.getDestinationPort(),finalString);
+                        if (listener == null) {
+                            // do nothing. No need of responding
+                        } else {
+                            Response response = listener.onMessageReceived(message);
+                            if (response != null) {
+                                String finalString = MessageHandler.prepareForSending(response);
+                                MessageHandler.getInstance().sendUDPMsg(response.getDestinationIP(), response.getDestinationPort(), finalString);
 //                            byte[] bytes = finalString.getBytes();
 //                            DatagramPacket replyPacket = new DatagramPacket(bytes,bytes.length,InetAddress.getByName(response.getDestinationIP()),response.getDestinationPort());
 //                            datagramSocket.send(replyPacket);
+                            }
                         }
                     }
 

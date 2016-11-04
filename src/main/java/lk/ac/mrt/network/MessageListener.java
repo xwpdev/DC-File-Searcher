@@ -5,4 +5,6 @@ package lk.ac.mrt.network;
  */
 public interface MessageListener {
     Response onMessageReceived(Message message);
+
+    Response onResponseReceived(Response response);
 }

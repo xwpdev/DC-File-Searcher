@@ -47,6 +47,11 @@ public class Router {
                 joinResponse.copyReturnData(message);
                 return joinResponse;
             }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                return null;
+            }
         });
 
 		//LEAVE message handling
@@ -62,7 +67,30 @@ public class Router {
                 response.copyReturnData(message);
 				return response;
 			}
-		});
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                return null;
+            }
+        });
+
+
+        //SEROK message handling
+        MessageHandler.getInstance().registerForReceiving(ResponseType.SEARCH, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+              return null;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                if(response instanceof SearchResponse) {
+                    SearchResponse searchResponse = (SearchResponse) response;
+                    searchResponse.printResult();
+                }
+                return response;
+            }
+        });
     }
 
     public boolean register() {

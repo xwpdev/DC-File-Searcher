@@ -95,7 +95,10 @@ public class App
         //Enable UDP listening for all messages
 		MessageHandler.getInstance().startListening();
 
-    }
+		// AHESH send UDP message
+		MessageHandler.getInstance().sendUDPMsg("10.10.10.132",8080,"TEST UDP MESSAGE");
+
+	}
 
     private static void handleUnregister(){
         Router router = Router.getInstance();

@@ -41,7 +41,7 @@ public class MessageHandler {
      * @param message
      * @return
      */
-    public void sendUDPMsg(String ipAddress,int port,String message) {
+    private void sendUDPMsg(String ipAddress,int port,String message) {
         try {
             DatagramSocket ds = new DatagramSocket();
             InetAddress ip = InetAddress.getByName(ipAddress);
@@ -64,30 +64,33 @@ public class MessageHandler {
         if(msg.type != MessageType.REGISTER && msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response
             boolean listening = isListening();
-            if(listening){
+            boolean needResponse = msg.type != MessageType.SEARCH;
+            if(listening && needResponse){
                 stopListening();
             }
 
             sendUDPMsg(msg.getDestinationIP(),msg.getDestinationPort(),prepareForSending(msg));
-            byte[] buffer = new byte[1024];
-            DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
-            try {
-                DatagramSocket datagramSocket = new DatagramSocket(localPort);
-                datagramSocket.receive(incomingPacket);
+            if(needResponse) {
+                byte[] buffer = new byte[1024];
+                DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
+                try {
+                    DatagramSocket datagramSocket = new DatagramSocket(localPort);
+                    datagramSocket.receive(incomingPacket);
 
-                InetAddress ipAddress = incomingPacket.getAddress();
-                int port = incomingPacket.getPort();
+                    InetAddress ipAddress = incomingPacket.getAddress();
+                    int port = incomingPacket.getPort();
 
-                String tempMsg = new String(buffer);
-                System.out.println("Listener received: " + tempMsg + " from " + ipAddress + ":" + port);
-                int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
+                    String tempMsg = new String(buffer);
+                    System.out.println("Listener received: " + tempMsg + " from " + ipAddress + ":" + port);
+                    int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
 
-                return MessageHandler.getInstance().handleResponse(tempMsg.substring(0, length));
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                if(listening){
-                    startListening();
+                    return MessageHandler.getInstance().handleResponse(tempMsg.substring(0, length));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (listening && needResponse) {
+                        startListening();
+                    }
                 }
             }
 

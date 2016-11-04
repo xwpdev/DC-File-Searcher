@@ -65,6 +65,9 @@ public class SearchHandler
 						List<Node> randomNodeList = new Router().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
 						for (Node n : randomNodeList) {
 							//TODO Forward to each
+							searchMessage.setDestinationIP(n.getIp());
+							searchMessage.setDestinationPort(n.getPort());
+							MessageHandler.getInstance().send(searchMessage);
 						}
 
 					} else {

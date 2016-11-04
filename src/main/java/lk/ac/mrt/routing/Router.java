@@ -73,7 +73,6 @@ public class Router {
         registerMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send register message
-		//TODO: this can be a ErrorResponse object if BS returned an error. Need to handle and return it back
 
         Response response = messageHandler.send(registerMessage);
         if ( response instanceof ErrorResponse){
@@ -84,6 +83,19 @@ public class Router {
             //Handle response
             RegisterResponse registerResponse = (RegisterResponse) response;
             int nodes = registerResponse.getNumberOfNodes();
+            if(nodes == 9999){
+                System.out.println("failed, there is some error in the command");
+                return false;
+            }else if (nodes == 9998){
+                System.out.println("failed, already registered to you, unregister firs");
+                return false;
+            }else if (nodes == 9997){
+                System.out.println("failed, registered to another user, try a different IP and port");
+                return false;
+            }else if(nodes == 9996 ){
+                System.out.println("failed, can’t register. BS full.");
+                return false;
+            }
             for (int i = 0; i < nodes ; i++) {
                 table.addNode(registerResponse.getNodeList().get(i));
             }

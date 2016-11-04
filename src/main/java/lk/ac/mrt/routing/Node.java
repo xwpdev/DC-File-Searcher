@@ -5,12 +5,12 @@ package lk.ac.mrt.routing;
  */
 public class Node {
 
-    private int nodeID;
+    private String nodeID;
     private String ip;
     private int port;
 
 
-    public Node(int nodeID, String ip, int port) {
+    public Node(String nodeID, String ip, int port) {
         this.nodeID = nodeID;
         this.ip = ip;
         this.port = port;
@@ -22,11 +22,11 @@ public class Node {
     }
 
 
-    public int getNodeID() {
+    public String getNodeID() {
         return nodeID;
     }
 
-    public void setNodeID(int nodeID) {
+    public void setNodeID(String nodeID) {
         this.nodeID = nodeID;
     }
 

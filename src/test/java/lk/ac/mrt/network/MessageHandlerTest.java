@@ -22,7 +22,7 @@ public class MessageHandlerTest extends TestCase {
 //            Thread.sleep(500);
             message.setSourcePort(message.getSourcePort() + 1 );
             message.setUsername("abcd" +String.valueOf(message.getSourcePort()));
-            instance.send(message);
+//            instance.send(message);
         }
     }
 

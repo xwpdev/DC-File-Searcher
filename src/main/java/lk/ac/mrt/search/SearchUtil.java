@@ -9,7 +9,7 @@ import java.util.List;
 public class SearchUtil {
 
     public static List<String> search(String query, FilesList list){
-        //Search comparison logic implementation
+        //File search comparison logic implementation
         List<String> matchedFiles = new ArrayList<String>();
         for (String file : list.getFileNames()) {
             if (file.equalsIgnoreCase(query)) {

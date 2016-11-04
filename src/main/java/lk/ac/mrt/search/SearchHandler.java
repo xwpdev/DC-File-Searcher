@@ -62,7 +62,7 @@ public class SearchHandler
 
 						searchMessage.setHopCount(--hopCount);
 						//Forward message
-						List<Node> randomNodeList = new Router().getRandomNodes(4);
+						List<Node> randomNodeList = new Router().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
 						for (Node n : randomNodeList) {
 							//TODO Forward to each
 						}
@@ -122,7 +122,7 @@ public class SearchHandler
 		messageMap = new MessageMap().getMessageMap();
 	}
 
-	public void initiateSearch( String keyword )
+	public Response initiateSearch( String keyword )
 	{
 		SearchMessage message = new SearchMessage();
 		MessageHandler messageHandler = MessageHandler.getInstance();
@@ -135,7 +135,8 @@ public class SearchHandler
 		message.setHopCount( maxHopCount );
 
 		//send search message
-		messageHandler.send( message );
+		Router.getInstance().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
+		return messageHandler.send( message );
 	}
 
 }

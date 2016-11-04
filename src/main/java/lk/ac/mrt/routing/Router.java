@@ -20,6 +20,7 @@ public class Router {
 
     public Router() {
         messageHandler = MessageHandler.getInstance();
+		table = new RoutingTable();
 		initListener();
     }
 
@@ -183,7 +184,7 @@ public class Router {
         List<Node> nodeList = new ArrayList<>();
         int max = table.getSize();
         if (max <= limit) {
-            for (int i = 0; i <= max; i++) {
+            for (int i = 0; i < max; i++) {
                 nodeList.add(table.getNode(i));
             }
         } else {

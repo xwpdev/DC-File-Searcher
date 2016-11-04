@@ -9,15 +9,43 @@ import java.util.List;
  */
 public class RoutingTable {
 
-    private ArrayList<Node> routingTable;
+    private ArrayList<Node> routingTable = new ArrayList<>(  );
 
-    public void addNode(Node node){
-        routingTable.add(node);
+    public boolean addNode(Node node){
+
+		boolean exist = false;
+		for ( Node nd : routingTable )
+		{
+			if(nd.getIp().equals( node.getIp() ) && nd.getPort() == node.getPort()){
+				exist = true;
+				break;
+			}
+		}
+
+		if(!exist)
+		{
+			routingTable.add( node );
+			return true;
+		}
+		return false;
     }
 
-    public void deleteNode(Node node){
-        routingTable.remove(node);
-    }
+    public void deleteNode(Node node) {
+		int index = -1;
+		for ( int i = 0; i < routingTable.size(); i++ )
+		{
+			Node nd = routingTable.get( i );
+			if ( nd.getIp().equals( node.getIp() ) && nd.getPort() == node.getPort() )
+			{
+				index = i;
+				break;
+			}
+		}
+		if ( index >= 0 )
+		{
+			routingTable.remove( index );
+		}
+	}
 
     public void clearData(){routingTable.clear();}
 

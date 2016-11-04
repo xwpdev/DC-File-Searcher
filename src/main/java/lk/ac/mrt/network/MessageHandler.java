@@ -33,6 +33,26 @@ public class MessageHandler {
         }
     }
 
+    // AHESH
+    /**
+     * Send a UDP message
+     * @param ipAddress
+     * @param port
+     * @param message
+     * @return
+     */
+    public void sendUDPMsg(String ipAddress,int port,String message) {
+        try {
+            DatagramSocket ds = new DatagramSocket();
+            InetAddress ip = InetAddress.getByName(ipAddress);
+            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, port);
+            ds.send(dp);
+            ds.close();
+        }catch (IOException socketException){
+
+        }
+    }
+
     /**
      * Send a message through UDP and get the response
      *

@@ -71,7 +71,7 @@ public class SearchHandler
 						}
 
 					} else {
-						//TODO Discard
+						//Discard
 					}
 				}
 

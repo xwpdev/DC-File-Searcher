@@ -1,15 +1,19 @@
 package lk.ac.mrt.network;
 
+import lk.ac.mrt.routing.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dinu on 11/3/16.
  */
 public class RegisterResponse extends Response {
 
     private int numberOfNodes;
-    private String ip1;
-    private int port1;
-    private String ip2;
-    private int port2;
+
+    List<Node> nodeList = new ArrayList<>();
+
 
     public RegisterResponse() {
         this.type = ResponseType.REGISTER;
@@ -23,41 +27,13 @@ public class RegisterResponse extends Response {
         this.numberOfNodes = numberOfNodes;
     }
 
-    public String getIp1() {
-        return ip1;
-    }
+    public List<Node> getNodeList(){ return nodeList; }
 
-    public void setIp1(String ip1) {
-        this.ip1 = ip1;
-    }
-
-    public int getPort1() {
-        return port1;
-    }
-
-    public void setPort1(int port1) {
-        this.port1 = port1;
-    }
-
-    public String getIp2() {
-        return ip2;
-    }
-
-    public void setIp2(String ip2) {
-        this.ip2 = ip2;
-    }
-
-    public int getPort2() {
-        return port2;
-    }
-
-    public void setPort2(int port2) {
-        this.port2 = port2;
-    }
 
     @Override
     public String marshall() {
-        return appendAll(type.code(), getNumberOfNodes(), getIp1(), getPort1(), getIp2(), getPort2());
+        //return appendAll(type.code(), getNumberOfNodes());
+        return null;
     }
 
     @Override
@@ -66,8 +42,8 @@ public class RegisterResponse extends Response {
         int numOfNodes = Integer.parseInt(splits[1]);
 		setNumberOfNodes(numOfNodes);
         for (int i = 0; i < numOfNodes ; i++) {
-            setIp1(splits[i+2]);
-            setPort1(Integer.parseInt(splits[i+3]));
+            Node node = new Node(splits[i+2],Integer.parseInt(splits[i+3]));
+            nodeList.add(node);
         }
 
     }

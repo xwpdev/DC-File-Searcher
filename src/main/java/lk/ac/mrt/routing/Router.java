@@ -63,7 +63,7 @@ public class Router {
 		});
     }
 
-    public void register() {
+    public boolean register() {
 
         //Create register message
         RegisterMessage registerMessage = new RegisterMessage();
@@ -74,28 +74,29 @@ public class Router {
 
         //Send register message
 		//TODO: this can be a ErrorResponse object if BS returned an error. Need to handle and return it back
-        RegisterResponse registerResponse = (RegisterResponse) messageHandler.send(registerMessage);
 
-        //Handle response
-        int nodes = registerResponse.getNumberOfNodes();
-
-        switch (nodes) {
-            case 2: {
-                table.addNode(new Node(registerResponse.getIp2(), registerResponse.getPort2()));
+        Response response = messageHandler.send(registerMessage);
+        if ( response instanceof ErrorResponse){
+            ErrorResponse errorResponse = (ErrorResponse) response;
+            System.out.println("Error response received");
+            return false;
+        }else if (response instanceof  RegisterResponse){
+            //Handle response
+            RegisterResponse registerResponse = (RegisterResponse) response;
+            int nodes = registerResponse.getNumberOfNodes();
+            for (int i = 0; i < nodes ; i++) {
+                table.addNode(registerResponse.getNodeList().get(i));
             }
-            case 1: {
-                table.addNode(new Node(registerResponse.getIp1(), registerResponse.getPort1()));
-            }
-            default: {
-                //do nothing
-            }
+            System.out.println("Successfully Registered");
+            return true;
+        }else{
+            System.out.println("Unhandled Response Type for the Request");
+            return false;
         }
-
-        System.out.println("Successfully Registered");
 
     }
 
-    public void unregister() {
+    public boolean unregister() {
 
         //Create unregister message
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
@@ -103,23 +104,31 @@ public class Router {
         unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send unregister message
-        UnRegisterResponse unRegisterResponse = (UnRegisterResponse) messageHandler.send(unRegisterMessage);
-
-        //Handle unregister response
-        int value = unRegisterResponse.getValue();
-        if (value == 0) {
-            System.out.println("Successfully Unregistered");
-            flushData();
-        } else if (value == 9999) {
-            System.out.println("Error while unregistering. IP and port may not be in the registry or command is incorrect");
-        } else {
-            System.out.println("Unhandled value");
+        Response response = messageHandler.send(unRegisterMessage);
+        if (response instanceof UnRegisterResponse) {
+            UnRegisterResponse unRegisterResponse = (UnRegisterResponse) response;
+            //Handle unregister response
+            int value = unRegisterResponse.getValue();
+            if (value == 0) {
+                System.out.println("Successfully Unregistered");
+                flushData();
+                return true;
+            } else if (value == 9999) {
+                System.out.println("Error while unregistering. IP and port may not be in the registry or command is incorrect");
+                return false;
+            } else {
+                System.out.println("Unhandled value");
+                return false;
+            }
+        } else if (response instanceof ErrorResponse) {
+            System.out.println("Error response received");
+            return false;
         }
-
-
+        return false;
     }
 
-    public void join(Node node) {
+
+    public boolean join(Node node) {
 
         //Create join message
         JoinMessage joinMessage = new JoinMessage();
@@ -128,23 +137,33 @@ public class Router {
         joinMessage.setDestinationPort(node.getPort());
 
         // Send join message
-        JoinResponse joinResponse = (JoinResponse) messageHandler.send(joinMessage);
+        Response response = messageHandler.send(joinMessage);
 
-        // Handle join response
-        int value = joinResponse.getValue();
+        if(response instanceof JoinResponse){
+            JoinResponse joinResponse = (JoinResponse)  response;
 
-        if (value == 0) {
-            System.out.println("Successfully Joined");
-            table.addNode(new Node(joinMessage.getDestinationIP(), joinMessage.getDestinationPort()));
-        } else if (value == 9999) {
-            System.out.println("error while adding new node to routing table");
-        } else {
-            System.out.println("Unhandled value");
+            // Handle join response
+            int value = joinResponse.getValue();
+
+            if (value == 0) {
+                System.out.println("Successfully Joined");
+                table.addNode(new Node(joinMessage.getDestinationIP(), joinMessage.getDestinationPort()));
+                return true;
+            } else if (value == 9999) {
+                System.out.println("error while adding new node to routing table");
+                return false;
+            } else {
+                System.out.println("Unhandled value");
+                return false;
+            }
+        }else if (response instanceof ErrorResponse){
+            System.out.println("Error response received");
+            return false;
         }
-
+        return false;
     }
 
-    public void leave() {
+    public boolean leave() {
 
         for (int i = 0; i < table.getSize(); i++) {
             //Create leave message
@@ -154,19 +173,27 @@ public class Router {
             leaveMessage.setDestinationPort(table.getNode(i).getPort());
 
 
-            // Send jLeave message
-            LeaveResponse leaveResponse = (LeaveResponse) messageHandler.send(leaveMessage);
+            // Send Leave message
+            Response response = messageHandler.send(leaveMessage);
 
-            // Handle join response
-            int value = leaveResponse.getValue();
+            if(response instanceof LeaveResponse){
+                LeaveResponse leaveResponse = (LeaveResponse) response;
 
-            if (value == 0) {
-                System.out.println("Successfully Joined");
-            } else if (value == 9999) {
-                System.out.println("Leave Failed");
-            } else {
-                System.out.println("Unhandled value");
+                // Handle join response
+                int value = leaveResponse.getValue();
+
+                if (value == 0) {
+                    System.out.println("Successfully Joined");
+                    break;
+                } else if (value == 9999) {
+                    System.out.println("Leave Failed");
+                    break;
+                } else {
+                    System.out.println("Unhandled value");
+                    break;
+                }
             }
+
         }
 
 

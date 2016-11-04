@@ -82,9 +82,10 @@ public class App
 
 	private static void handleRegister(){
         Router router = Router.getInstance();
-        router.register();
-
-		//TODO: Take output from router.register(); and handle error
+        boolean success =router.register();
+        if(!success){
+            return ;
+        }
 
         //two random nodes join
         List<Node> nodeList = router.getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.JOIN_COUNT ) ) );
@@ -99,10 +100,11 @@ public class App
 
     private static void handleUnregister(){
         Router router = Router.getInstance();
-        router.unregister();
+        boolean success = router.unregister();
+        if(!success){
+            return;
+        }
 
-//		TODO: Return result from unregister method.
-		// if router.unregister(); is success
 		MessageHandler.getInstance().stopListening();
     }
 

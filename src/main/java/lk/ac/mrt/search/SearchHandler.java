@@ -63,15 +63,12 @@ public class SearchHandler
 						searchMessage.setHopCount(--hopCount);
 						//Forward message
 						List<Node> randomNodeList = new Router().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
-						for (Node n : randomNodeList) {
-							//TODO Forward to each
-							searchMessage.setDestinationIP(n.getIp());
-							searchMessage.setDestinationPort(n.getPort());
+						for (Node node : randomNodeList) {
+							//Forward to each
+							searchMessage.setDestinationIP(node.getIp());
+							searchMessage.setDestinationPort(node.getPort());
 							MessageHandler.getInstance().send(searchMessage);
 						}
-
-					} else {
-						//TODO Discard
 					}
 				}
 

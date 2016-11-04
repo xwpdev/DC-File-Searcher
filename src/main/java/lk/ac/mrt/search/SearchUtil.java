@@ -1,5 +1,6 @@
 package lk.ac.mrt.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,13 @@ import java.util.List;
 public class SearchUtil {
 
     public static List<String> search(String query, FilesList list){
-        //TODO: implment search comparison logic here
-        return list.getFileNames();
+        //Search comparison logic implementation
+        List<String> matchedFiles = new ArrayList<String>();
+        for (String file : list.getFileNames()) {
+            if (file.equalsIgnoreCase(query)) {
+                matchedFiles.add(file);
+            }
+        }
+        return matchedFiles;
     }
 }

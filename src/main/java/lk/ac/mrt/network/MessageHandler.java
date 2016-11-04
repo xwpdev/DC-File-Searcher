@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class MessageHandler {
 
-    private static final int MSG_LENGTH = 4;
+    public static final int MSG_LENGTH = 4;
     private static MessageHandler instance;
 
     private String localIP;
@@ -48,8 +48,8 @@ public class MessageHandler {
             DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, port);
             ds.send(dp);
             ds.close();
-        }catch (IOException socketException){
-
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -61,59 +61,94 @@ public class MessageHandler {
      */
     public Response send(Message msg) {
 
-        Socket socket = null;
-        DataOutputStream os = null;
-        BufferedReader is = null;
+        if(msg.type != MessageType.REGISTER){
+            //stop UDP listening to accept response
+            boolean listening = isListening();
+            if(listening){
+                stopListening();
+            }
 
-        String destinationIP = msg.getDestinationIP();
-        int destinationPort = msg.getDestinationPort();
-        if (destinationIP == null || destinationIP.isEmpty() || destinationPort <= 0) {
-            System.err.println("Invalid destination data. host:port=" + destinationIP + ":" + destinationPort);
+            sendUDPMsg(msg.getDestinationIP(),msg.getDestinationPort(),prepareForSending(msg));
+            byte[] buffer = new byte[1024];
+            DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
+            try {
+                DatagramSocket datagramSocket = new DatagramSocket(localPort);
+                datagramSocket.receive(incomingPacket);
+
+                InetAddress ipAddress = incomingPacket.getAddress();
+                int port = incomingPacket.getPort();
+
+                String tempMsg = new String(buffer);
+                System.out.println("Listener received: " + tempMsg + " from " + ipAddress + ":" + port);
+                int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
+
+                return MessageHandler.getInstance().handleResponse(tempMsg.substring(0, length));
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                if(listening){
+                    startListening();
+                }
+            }
+
+            return null;
+        }else {
+
+            Socket socket = null;
+            DataOutputStream os = null;
+            BufferedReader is = null;
+
+            String destinationIP = msg.getDestinationIP();
+            int destinationPort = msg.getDestinationPort();
+            if (destinationIP == null || destinationIP.isEmpty() || destinationPort <= 0) {
+                System.err.println("Invalid destination data. host:port=" + destinationIP + ":" + destinationPort);
+                return null;
+            }
+            try {
+                socket = new Socket(destinationIP, destinationPort);
+                os = new DataOutputStream(socket.getOutputStream());
+                is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                String finalString = prepareForSending(msg);
+                System.out.println("Sending msg:" + finalString);
+                os.write(finalString.getBytes());
+
+
+                String responseLine = is.readLine();
+                System.out.println("Response: " + responseLine);
+
+                return handleResponse(responseLine);
+
+            } catch (UnknownHostException e) {
+                System.err.println("Unable to connect to host: " + destinationIP);
+            } catch (IOException e) {
+                System.err.println("Couldn't get I/O for the connection to: " + destinationIP);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             return null;
         }
-        try {
-            socket = new Socket(destinationIP, destinationPort);
-            os = new DataOutputStream(socket.getOutputStream());
-            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            String finalString = prepareForSending(msg);
-            System.out.println("Sending msg:" + finalString);
-            os.write(finalString.getBytes());
-
-
-            String responseLine = is.readLine();
-            System.out.println("Response: " + responseLine);
-
-            return handleResponse(responseLine);
-
-        } catch (UnknownHostException e) {
-            System.err.println("Unable to connect to host: " + destinationIP);
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to: " + destinationIP);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
     }
 
     public static Response handleResponse(String responseLine) {
@@ -184,7 +219,6 @@ public class MessageHandler {
     /**
      * Open the port and listen
      *
-     * @param port
      */
     public void startListening() {
         if (udpListener == null) {
@@ -196,12 +230,16 @@ public class MessageHandler {
     }
 
     /**
-     * Close the port which is listening initiated by {@link #startListening(int)}
+     * Close the port which is listening initiated by {@link #startListening()}
      */
     public void stopListening() {
         if(udpListener != null){
             udpListener.setRunning(false);
         }
+    }
+
+    public boolean isListening(){
+        return (udpListener != null && udpListener.isRunning());
     }
 
 

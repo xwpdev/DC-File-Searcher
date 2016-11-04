@@ -163,7 +163,7 @@ public class Router {
         return false;
     }
 
-    public boolean leave() {
+    public void leave() {
 
         for (int i = 0; i < table.getSize(); i++) {
             //Create leave message
@@ -192,6 +192,8 @@ public class Router {
                     System.out.println("Unhandled value");
                     break;
                 }
+            }else if (response instanceof ErrorResponse){
+                System.out.println("Error response received from "+leaveMessage.getDestinationIP());
             }
 
         }

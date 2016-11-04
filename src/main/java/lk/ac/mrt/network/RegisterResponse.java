@@ -41,9 +41,14 @@ public class RegisterResponse extends Response {
         String[] splits = messsageData.split(String.valueOf(WHITESPACE));
         int numOfNodes = Integer.parseInt(splits[1]);
 		setNumberOfNodes(numOfNodes);
-        for (int i = 0; i < numOfNodes ; i++) {
-            Node node = new Node(splits[i+2],Integer.parseInt(splits[i+3]));
-            nodeList.add(node);
+        if(numberOfNodes <=9900){
+            for (int i = 0; i < numOfNodes ; i++) {
+                int index = i*3;
+                Node node = new Node(splits[index+2],Integer.parseInt(splits[index+3]));
+                node.setNodeID(splits[index+4]);
+                nodeList.add(node);
+            }
+
         }
 
     }

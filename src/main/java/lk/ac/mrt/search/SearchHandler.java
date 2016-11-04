@@ -71,7 +71,7 @@ public class SearchHandler
 						}
 
 					} else {
-						//Discard
+						//Discard without forwarding
 					}
 				}
 

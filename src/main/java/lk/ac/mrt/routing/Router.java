@@ -20,6 +20,7 @@ public class Router {
 
     public Router() {
         messageHandler = MessageHandler.getInstance();
+		initListener();
     }
 
     public static Router getInstance()
@@ -31,7 +32,8 @@ public class Router {
         return instance;
     }
 
-    public void initListner() {
+    private void initListener() {
+		//JOIN message handling
         MessageHandler.getInstance().registerForReceiving(MessageType.JOIN, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
@@ -45,6 +47,19 @@ public class Router {
             }
         });
 
+		//LEAVE message handling
+		MessageHandler.getInstance().registerForReceiving(MessageType.LEAVE, new MessageListener() {
+			@Override
+			public Response onMessageReceived(Message message) {
+				LeaveMessage leaveMessage = (LeaveMessage) message;
+				Node node = new Node(leaveMessage.getSourceIP(), leaveMessage.getSourcePort());
+				table.deleteNode(node);
+
+				LeaveResponse response = new LeaveResponse();
+				response.setValue(0);
+				return response;
+			}
+		});
     }
 
     public void register() {
@@ -184,9 +199,15 @@ public class Router {
     }
 
     public void printRoutingTable(){
-        for (int i = 0; i < table.getSize() ; i++) {
-            System.out.println(""+table.getNode(i).getIp()+"                "+table.getNode(i).getPort());
-        }
+		if(table != null)
+		{
+			for ( int i = 0; i < table.getSize(); i++ )
+			{
+				System.out.println( "" + table.getNode( i ).getIp() + "                " + table.getNode( i ).getPort() );
+			}
+		}else{
+			System.out.println("Not initialized yet. Please register and join to the system");
+		}
     }
 
 

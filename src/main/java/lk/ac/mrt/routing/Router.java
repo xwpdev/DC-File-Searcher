@@ -102,6 +102,8 @@ public class Router {
         UnRegisterMessage unRegisterMessage = new UnRegisterMessage();
         setCommonMessageProperties(unRegisterMessage);
         unRegisterMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
+        unRegisterMessage.setDestinationIP(PropertyProvider.getProperty("REG_IP"));
+        unRegisterMessage.setDestinationPort(Integer.parseInt(PropertyProvider.getProperty("REG_PORT")));
 
         //Send unregister message
         Response response = messageHandler.send(unRegisterMessage);

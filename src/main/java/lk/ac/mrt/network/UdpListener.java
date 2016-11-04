@@ -1,10 +1,7 @@
 package lk.ac.mrt.network;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 
 /**
  * Created by chamika on 11/4/16.
@@ -13,21 +10,24 @@ public class UdpListener extends Thread {
 
     private boolean running;
     private int localPort;
+//    private DatagramSocket datagramSocket = null;
 
     @Override
     public void run() {
         super.run();
         running = true;
 
-        DatagramSocket datagramSocket = null;
-        try {
-            datagramSocket = new DatagramSocket(localPort);
+//        try {
+//            if(datagramSocket == null) {
+//                datagramSocket = new DatagramSocket(null);
+//                datagramSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), localPort));
+//            }
 
             while(running){
                 byte[] buffer = new byte[1024];
                 DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
                 try {
-                    datagramSocket.receive(incomingPacket);
+                    MessageHandler.getInstance().getDatagramSocket().receive(incomingPacket);
 
                     InetAddress ipAddress = incomingPacket.getAddress();
                     int port = incomingPacket.getPort();
@@ -58,9 +58,11 @@ public class UdpListener extends Thread {
                     e.printStackTrace();
                 }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+//        } catch (SocketException e) {
+//            e.printStackTrace();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

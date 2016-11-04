@@ -70,8 +70,8 @@ public class App
 	{
 		System.out.print("\nEnter keyword to search:");
 		String keyword = scanner.next();
-		Response response = SearchHandler.getInstance().initiateSearch( keyword );
-		if(response == null || response instanceof ErrorResponse){
+		boolean result = SearchHandler.getInstance().initiateSearch(keyword);
+		if(!result){
 			System.out.println("Unable to start search");
 			return;
 		}

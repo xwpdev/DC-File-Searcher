@@ -125,7 +125,7 @@ public class SearchHandler
 		messageMap = new MessageMap().getMessageMap();
 	}
 
-	public Response initiateSearch( String keyword )
+	public boolean initiateSearch( String keyword )
 	{
 		SearchMessage message = new SearchMessage();
 		MessageHandler messageHandler = MessageHandler.getInstance();
@@ -138,8 +138,13 @@ public class SearchHandler
 		message.setHopCount( maxHopCount );
 
 		//send search message
-		Router.getInstance().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
-		return messageHandler.send( message );
+		List<Node> randomNodes = Router.getInstance().getRandomNodes(Integer.parseInt(PropertyProvider.getProperty(Constants.FORWARD_COUNT)));
+		for (Node node : randomNodes) {
+			message.setDestinationIP(node.getIp());
+			message.setDestinationPort(node.getPort());
+			messageHandler.send( message );
+		}
+		return true;
 	}
 
 }

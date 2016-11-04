@@ -6,6 +6,8 @@ import lk.ac.mrt.common.PropertyProvider;
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MessageHandler {
 
@@ -17,6 +19,8 @@ public class MessageHandler {
     private boolean initialized;
     private UdpListener udpListener;
     private HashMap<MessageType, MessageListener> registeredListeners = new HashMap<>();
+
+    private DatagramSocket datagramSocket;
 
     public static MessageHandler getInstance() {
         if (instance == null) {
@@ -31,6 +35,17 @@ public class MessageHandler {
         if (localIP != null && !localIP.isEmpty() && localPort > 0) {
             initialized = true;
         }
+
+        if(initialized){
+            try {
+                datagramSocket = new DatagramSocket(null);
+                datagramSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), localPort));
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // AHESH
@@ -42,14 +57,18 @@ public class MessageHandler {
      * @return
      */
     public void sendUDPMsg(String ipAddress,int port,String message) {
+        DatagramSocket ds = null;
         try {
-            DatagramSocket ds = new DatagramSocket();
+            ds = new DatagramSocket();
             InetAddress ip = InetAddress.getByName(ipAddress);
             DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, port);
             ds.send(dp);
-            ds.close();
         }catch (IOException e){
             e.printStackTrace();
+        }finally {
+            if(ds != null) {
+                ds.close();
+            }
         }
     }
 
@@ -63,18 +82,32 @@ public class MessageHandler {
 
         if(msg.type != MessageType.REGISTER && msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response
-            boolean listening = isListening();
-            boolean needResponse = msg.type != MessageType.SEARCH;
+            final boolean listening = isListening();
+            final boolean needResponse = msg.type != MessageType.SEARCH;
             if(listening && needResponse){
                 stopListening();
             }
 
-            sendUDPMsg(msg.getDestinationIP(),msg.getDestinationPort(),prepareForSending(msg));
+            //
+            if(!needResponse){
+                //no response can directly send message
+                sendUDPMsg(msg.getDestinationIP(),msg.getDestinationPort(),prepareForSending(msg));
+            }else {
+                // if need response, we have to start receive and later send the message
+                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+                executor.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendUDPMsg(msg.getDestinationIP(), msg.getDestinationPort(), prepareForSending(msg));
+                    }
+                }, 1, TimeUnit.SECONDS);
+            }
+
             if(needResponse) {
                 byte[] buffer = new byte[1024];
                 DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
+
                 try {
-                    DatagramSocket datagramSocket = new DatagramSocket(localPort);
                     datagramSocket.receive(incomingPacket);
 
                     InetAddress ipAddress = incomingPacket.getAddress();
@@ -88,6 +121,9 @@ public class MessageHandler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
+//                    if (datagramSocket == null) {
+//                        datagramSocket.close();
+//                    }
                     if (listening && needResponse) {
                         startListening();
                     }
@@ -268,4 +304,7 @@ public class MessageHandler {
         return registeredListeners.get(type);
     }
 
+    public DatagramSocket getDatagramSocket() {
+        return datagramSocket;
+    }
 }

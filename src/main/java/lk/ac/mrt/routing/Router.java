@@ -44,6 +44,7 @@ public class Router {
 
                 JoinResponse joinResponse = new JoinResponse();
                 joinResponse.setValue(0);
+                joinResponse.copyReturnData(message);
                 return joinResponse;
             }
         });
@@ -58,6 +59,7 @@ public class Router {
 
 				LeaveResponse response = new LeaveResponse();
 				response.setValue(0);
+                response.copyReturnData(message);
 				return response;
 			}
 		});

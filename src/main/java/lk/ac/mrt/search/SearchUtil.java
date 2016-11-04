@@ -12,7 +12,7 @@ public class SearchUtil {
         //File search comparison logic implementation
         List<String> matchedFiles = new ArrayList<String>();
         for (String file : list.getFileNames()) {
-            if (file.equalsIgnoreCase(query)) {
+            if (file.toUpperCase().contains(query.toUpperCase())) {
                 matchedFiles.add(file);
             }
         }

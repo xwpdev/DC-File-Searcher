@@ -76,8 +76,8 @@ public class App
 			return;
 		}
 		System.out.println("Waiting for results...");
-		System.out.println("Press 0 to stop the search");
-		while(scanner.nextInt() == 0);
+//		System.out.println("Press 0 to stop the search");
+//		while(scanner.nextInt() == 0);
 	}
 
 	private static void handleRegister(){

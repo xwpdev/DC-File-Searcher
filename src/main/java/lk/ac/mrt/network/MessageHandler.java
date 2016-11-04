@@ -131,10 +131,11 @@ public class MessageHandler {
                     int port = incomingPacket.getPort();
 
                     String tempMsg = new String(buffer);
-                    System.out.println("Listener received: " + tempMsg + " from " + ipAddress + ":" + port);
                     int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
 
-                    return MessageHandler.getInstance().handleResponse(tempMsg.substring(0, length));
+                    String realMsg = tempMsg.substring(0, length);
+                    System.out.println("Listener received: " + realMsg + " from " + ipAddress + ":" + port);
+                    return MessageHandler.getInstance().handleResponse(realMsg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

@@ -48,4 +48,9 @@ public abstract class Response extends Entity {
     public void setSourcePort(int sourcePort) {
         this.sourcePort = sourcePort;
     }
+
+    public void copyReturnData(Message message){
+        this.setDestinationIP(message.getSourceIP());
+        this.setDestinationPort(message.getSourcePort());
+    }
 }

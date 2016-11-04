@@ -41,7 +41,7 @@ public class MessageHandler {
      * @param message
      * @return
      */
-    private void sendUDPMsg(String ipAddress,int port,String message) {
+    public void sendUDPMsg(String ipAddress,int port,String message) {
         try {
             DatagramSocket ds = new DatagramSocket();
             InetAddress ip = InetAddress.getByName(ipAddress);

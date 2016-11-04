@@ -61,7 +61,7 @@ public class MessageHandler {
      */
     public Response send(Message msg) {
 
-        if(msg.type != MessageType.REGISTER){
+        if(msg.type != MessageType.REGISTER || msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response
             boolean listening = isListening();
             if(listening){

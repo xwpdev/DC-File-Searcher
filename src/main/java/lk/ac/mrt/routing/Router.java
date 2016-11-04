@@ -57,6 +57,7 @@ public class Router {
         registerMessage.setUsername(PropertyProvider.getProperty("USERNAME"));
 
         //Send register message
+		//TODO: this can be a ErrorResponse object if BS returned an error. Need to handle and return it back
         RegisterResponse registerResponse = (RegisterResponse) messageHandler.send(registerMessage);
 
         //Handle response

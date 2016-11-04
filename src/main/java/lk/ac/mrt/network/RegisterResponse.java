@@ -63,7 +63,8 @@ public class RegisterResponse extends Response {
     @Override
     public void unmarshall(String messsageData) {
         String[] splits = messsageData.split(String.valueOf(WHITESPACE));
-        setNumberOfNodes(Integer.parseInt(splits[1]));
+		setNumberOfNodes(Integer.parseInt(splits[1]));
+		//TODO: Can have multiple IPs from 0 to more. Use numberOfNodes to count IPs
         setIp1(splits[2]);
         setPort1(Integer.parseInt(splits[3]));
         setIp2(splits[4]);

@@ -166,7 +166,7 @@ public class MessageHandler {
      *
      * @param port
      */
-    public void startListening(int port) {
+    public void startListening() {
         if (udpListener == null) {
             udpListener = new UdpListener();
             udpListener.setLocalPort(localPort);

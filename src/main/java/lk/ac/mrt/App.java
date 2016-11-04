@@ -1,6 +1,7 @@
 package lk.ac.mrt;
 
 import lk.ac.mrt.common.PropertyProvider;
+import lk.ac.mrt.network.MessageHandler;
 import lk.ac.mrt.routing.Node;
 import lk.ac.mrt.routing.Router;
 import lk.ac.mrt.routing.RoutingTable;
@@ -49,22 +50,35 @@ public class App
     private static void handleRegister(){
         Router router = Router.getInstance();
         router.register();
+
+		//TODO: Take output from router.register(); and handle error
+
         //two random nodes join
         List<Node> nodeList = router.getRandomNodes(2);
         for (Node node:nodeList){
             router.join(node);
         }
 
+        //Enable UDP listening for all messages
+		MessageHandler.getInstance().startListening();
+
     }
 
     private static void handleUnregister(){
         Router router = Router.getInstance();
         router.unregister();
+
+//		TODO: Return result from unregister method.
+		// if router.unregister(); is success
+		MessageHandler.getInstance().stopListening();
     }
 
     private static void handleLeave(){
         Router router = Router.getInstance();
         router.leave();
+		//TODO: add response from leave()
+		//if success from router.leave();
+		MessageHandler.getInstance().stopListening();
     }
 
     private static void printRoutingTable(){

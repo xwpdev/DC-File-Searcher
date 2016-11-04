@@ -48,7 +48,7 @@ public class UdpListener extends Thread {
                         if( response != null) {
                             String finalString = MessageHandler.prepareForSending(response);
                             byte[] bytes = finalString.getBytes();
-                            DatagramPacket replyPacket = new DatagramPacket(bytes,bytes.length);
+                            DatagramPacket replyPacket = new DatagramPacket(bytes,bytes.length,InetAddress.getByName(response.getDestinationIP()),response.getDestinationPort());
                             datagramSocket.send(replyPacket);
                         }
                     }

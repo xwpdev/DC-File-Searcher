@@ -14,6 +14,8 @@ public class MessageHandler {
     public static final int MSG_LENGTH = 4;
     private static MessageHandler instance;
 
+
+
     private String localIP;
     private int localPort;
     private boolean initialized;
@@ -48,6 +50,21 @@ public class MessageHandler {
         }
     }
 
+    public String getLocalIP() {
+        return localIP;
+    }
+
+    public void setLocalIP(String localIP) {
+        this.localIP = localIP;
+    }
+
+    public int getLocalPort() {
+        return localPort;
+    }
+
+    public void setLocalPort(int localPort) {
+        this.localPort = localPort;
+    }
     // AHESH
     /**
      * Send a UDP message

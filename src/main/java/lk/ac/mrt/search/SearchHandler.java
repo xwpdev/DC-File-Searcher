@@ -67,7 +67,12 @@ public class SearchHandler
 							//Forward to each
 							searchMessage.setDestinationIP(node.getIp());
 							searchMessage.setDestinationPort(node.getPort());
-							MessageHandler.getInstance().send(searchMessage);
+
+							MessageHandler messageHandler = MessageHandler.getInstance();
+							if (!(message.getSourceIP().equals(messageHandler.getLocalIP())) && (message.getSourcePort() == messageHandler.getLocalPort())) {
+								MessageHandler.getInstance().send(searchMessage);
+							}
+
 						}
 					}
 				}

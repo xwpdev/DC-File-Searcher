@@ -85,7 +85,7 @@ public class SearchHandler
 					//set destination ip port
 					response.setDestinationIP(searchMessage.getSourceIP());
 					response.setDestinationPort(searchMessage.getSourcePort());
-					MessageHandler.getInstance().setLocalDetails(message);
+					MessageHandler.getInstance().setLocalDetails(response);
 
 					return response;
 				}

@@ -312,6 +312,15 @@ public class MessageHandler {
         }
     }
 
+    public void setLocalDetails(Response response) {
+        if (initialized) {
+            response.setSourceIP(localIP);
+            response.setSourcePort(localPort);
+        } else {
+            new Exception("Network IP or port not initialized").printStackTrace();
+        }
+    }
+
     public static String prepareForSending(Entity entity) {
         String txt = entity.marshall();
         return String.format("%04d %s", txt.length() + 5, txt);

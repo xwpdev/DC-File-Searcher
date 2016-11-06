@@ -10,12 +10,12 @@ public class NetworkUtil {
 
     public static String getIP(){
 
-        String ip = "";
-        try {
-            ip = Inet4Address.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return ip;
+//        String ip = "";
+//        try {
+//            ip = Inet4Address.getLocalHost().getHostAddress();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+        return PropertyProvider.getProperty("LOCALIP");
     }
 }

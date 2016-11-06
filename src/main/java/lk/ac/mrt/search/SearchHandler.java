@@ -63,15 +63,17 @@ public class SearchHandler
 						searchMessage.setHopCount(--hopCount);
 						//Forward message
 						List<Node> randomNodeList = new Router().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
-						for (Node n : randomNodeList) {
-							//TODO Forward to each
-							searchMessage.setDestinationIP(n.getIp());
-							searchMessage.setDestinationPort(n.getPort());
-							MessageHandler.getInstance().send(searchMessage);
-						}
+						for (Node node : randomNodeList) {
+							//Forward to each
+							searchMessage.setDestinationIP(node.getIp());
+							searchMessage.setDestinationPort(node.getPort());
 
-					} else {
-						//TODO Discard
+							MessageHandler messageHandler = MessageHandler.getInstance();
+							if (!(message.getSourceIP().equals(messageHandler.getLocalIP())) && (message.getSourcePort() == messageHandler.getLocalPort())) {
+								MessageHandler.getInstance().send(searchMessage);
+							}
+
+						}
 					}
 				}
 
@@ -83,11 +85,18 @@ public class SearchHandler
 					//set destination ip port
 					response.setDestinationIP(searchMessage.getSourceIP());
 					response.setDestinationPort(searchMessage.getSourcePort());
-					MessageHandler.getInstance().setLocalDetails(message);
+					response.setHops(((SearchMessage) message).getHopCount());
+					response.setNoOfFiles(searchResults.size());
+					MessageHandler.getInstance().setLocalDetails(response);
 
 					return response;
 				}
 
+				return null;
+			}
+
+			@Override
+			public Response onResponseReceived(Response response) {
 				return null;
 			}
 		} );
@@ -125,7 +134,7 @@ public class SearchHandler
 		messageMap = new MessageMap().getMessageMap();
 	}
 
-	public Response initiateSearch( String keyword )
+	public boolean initiateSearch( String keyword )
 	{
 		SearchMessage message = new SearchMessage();
 		MessageHandler messageHandler = MessageHandler.getInstance();
@@ -138,8 +147,13 @@ public class SearchHandler
 		message.setHopCount( maxHopCount );
 
 		//send search message
-		Router.getInstance().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
-		return messageHandler.send( message );
+		List<Node> randomNodes = Router.getInstance().getRandomNodes(Integer.parseInt(PropertyProvider.getProperty(Constants.FORWARD_COUNT)));
+		for (Node node : randomNodes) {
+			message.setDestinationIP(node.getIp());
+			message.setDestinationPort(node.getPort());
+			messageHandler.send( message );
+		}
+		return true;
 	}
 
 }

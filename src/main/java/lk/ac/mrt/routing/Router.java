@@ -126,6 +126,7 @@ public class Router {
                 System.out.println("failed, can’t register. BS full.");
                 return false;
             }
+
             for (int i = 0; i < nodes ; i++) {
                 table.addNode(registerResponse.getNodeList().get(i));
             }

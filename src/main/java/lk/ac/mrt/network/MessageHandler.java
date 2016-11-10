@@ -78,7 +78,7 @@ public class MessageHandler {
             InetAddress ip = InetAddress.getByName(ipAddress);
             DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, port);
             ds.send(dp);
-            System.out.println("Sent UDP from port:" + ds.getLocalPort() + " to:" + ip + ":" + port + " Msg:" + message);
+//            System.out.println("Sent UDP from port:" + ds.getLocalPort() + " to:" + ip + ":" + port + " Msg:" + message);
         }catch (IOException e){
             e.printStackTrace();
         }finally {

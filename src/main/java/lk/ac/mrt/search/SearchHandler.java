@@ -14,6 +14,8 @@ import lk.ac.mrt.routing.Router;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by chamika on 11/3/2016.
@@ -52,7 +54,7 @@ public class SearchHandler
 				SearchMessage searchMessage = (SearchMessage) message;
 
 				//Check for the duplicate message
-				String messageHash = creatHash(message.getSourceIP(), message.getSourcePort(), searchMessage.getKeyword());
+				final String messageHash = creatHash(message.getSourceIP(), message.getSourcePort(), searchMessage.getKeyword());
 
 //				if (!checkDupe(messageHash)) {
 //					messageMap.put(messageHash, message);
@@ -78,19 +80,32 @@ public class SearchHandler
 //				}
 
                 //avoid from sending same
-				List<String> searchResults = SearchUtil.search(searchMessage.getKeyword(), filesList);
-				if (searchResults != null && !searchResults.isEmpty()) {
-					SearchResponse response = new SearchResponse();
-					response.setResults(searchResults);
-					//set destination ip port
-					response.setDestinationIP(searchMessage.getSourceIP());
-					response.setDestinationPort(searchMessage.getSourcePort());
-					response.setHops(((SearchMessage) message).getHopCount());
-					response.setNoOfFiles(searchResults.size());
-					MessageHandler.getInstance().setLocalDetails(response);
-                    messageMap.put(messageHash, message);
-					return response;
-				}
+                if(!checkDupe(messageHash)) {
+                    List<String> searchResults = SearchUtil.search(searchMessage.getKeyword(), filesList);
+                    if (searchResults != null && !searchResults.isEmpty()) {
+                        SearchResponse response = new SearchResponse();
+                        response.setResults(searchResults);
+                        //set destination ip port
+                        response.setDestinationIP(searchMessage.getSourceIP());
+                        response.setDestinationPort(searchMessage.getSourcePort());
+                        response.setHops(((SearchMessage) message).getHopCount());
+                        response.setNoOfFiles(searchResults.size());
+                        MessageHandler.getInstance().setLocalDetails(response);
+                        messageMap.put(messageHash, message);
+
+                        //cache remove after 10 seconds
+                        // if need response, we have to start receive and later send the message
+                        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+                        executor.schedule(new Runnable() {
+                            @Override
+                            public void run() {
+                                messageMap.remove(messageHash);
+                            }
+                        }, 10, TimeUnit.SECONDS);
+
+                        return response;
+                    }
+                }
 
 				return null;
 			}

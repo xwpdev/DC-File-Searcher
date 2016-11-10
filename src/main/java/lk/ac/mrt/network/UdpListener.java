@@ -37,7 +37,7 @@ public class UdpListener extends Thread {
                     int length = Integer.parseInt(msg.substring(0, MessageHandler.MSG_LENGTH));
 
                     String realMessage = msg.substring(0, length);
-                    System.out.println("Listener received: " + realMessage + " from " + ipAddress + ":" + port);
+//                    System.out.println("Listener received: " + realMessage + " from " + ipAddress + ":" + port);
                     Message message= MessageHandler.getInstance().handleMessage(realMessage);
                     if(message == null){
                         // Response. (like search result)

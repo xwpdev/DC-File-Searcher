@@ -127,6 +127,11 @@ public class Router {
                 return false;
             }
             System.out.println("Successfully Registered");
+
+            List<Node> randomNodes = (List<Node>) getRandomItems(registerResponse.getNodeList(), 2);
+            for (Node node : randomNodes) {
+                table.addNode(node);
+            }
             return true;
         }else{
             System.out.println("Unhandled Response Type for the Request");
@@ -263,6 +268,25 @@ public class Router {
             while (set.size() < limit) {
                 int i = rand.nextInt(table.getSize());
                 set.add(table.getNode(i));
+            }
+            nodeList.addAll(set);
+        }
+        return nodeList;
+    }
+
+    public static List getRandomItems(List list, int limit) {
+        List nodeList = new ArrayList();
+        int max = list.size();
+        if (max <= limit) {
+            for (int i = 0; i < max; i++) {
+                nodeList.add(list.get(i));
+            }
+        } else {
+            Random rand = new Random();
+            Set set = new HashSet();
+            while (set.size() < limit) {
+                int i = rand.nextInt(list.size());
+                set.add(list.get(i));
             }
             nodeList.addAll(set);
         }

@@ -71,7 +71,7 @@ public class SearchResponse extends Response{
 	}
 
 	public void printResult(){
-		System.out.println("Fount results from:" + getSourceIP() +":" + getSourcePort());
+		System.out.println("Found results from:" + getSourceIP() +":" + getSourcePort());
 		System.out.println(results);
 	}
 }

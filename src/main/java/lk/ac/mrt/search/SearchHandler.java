@@ -54,30 +54,30 @@ public class SearchHandler
 				//Check for the duplicate message
 				String messageHash = creatHash(message.getSourceIP(), message.getSourcePort(), searchMessage.getKeyword());
 
-				if (!checkDupe(messageHash)) {
-					messageMap.put(messageHash, message);
+//				if (!checkDupe(messageHash)) {
+//					messageMap.put(messageHash, message);
 					int hopCount = searchMessage.getHopCount();
 
 					if (hopCount > 0) {
 
 						searchMessage.setHopCount(--hopCount);
 						//Forward message
-						List<Node> randomNodeList = new Router().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
+						List<Node> randomNodeList = Router.getInstance().getRandomNodes( Integer.parseInt( PropertyProvider.getProperty( Constants.FORWARD_COUNT ) ) );
 						for (Node node : randomNodeList) {
 							//Forward to each
 							searchMessage.setDestinationIP(node.getIp());
 							searchMessage.setDestinationPort(node.getPort());
 
 							MessageHandler messageHandler = MessageHandler.getInstance();
-							if (!(message.getSourceIP().equals(messageHandler.getLocalIP())) && (message.getSourcePort() == messageHandler.getLocalPort())) {
+							if (!(message.getSourceIP().equals(messageHandler.getLocalIP()) && message.getSourcePort() == messageHandler.getLocalPort())) {
 								MessageHandler.getInstance().send(searchMessage);
 							}
 
 						}
 					}
-				}
+//				}
 
-
+                //avoid from sending same
 				List<String> searchResults = SearchUtil.search(searchMessage.getKeyword(), filesList);
 				if (searchResults != null && !searchResults.isEmpty()) {
 					SearchResponse response = new SearchResponse();
@@ -88,7 +88,7 @@ public class SearchHandler
 					response.setHops(((SearchMessage) message).getHopCount());
 					response.setNoOfFiles(searchResults.size());
 					MessageHandler.getInstance().setLocalDetails(response);
-
+                    messageMap.put(messageHash, message);
 					return response;
 				}
 

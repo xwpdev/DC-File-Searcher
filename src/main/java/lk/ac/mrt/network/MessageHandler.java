@@ -20,7 +20,7 @@ public class MessageHandler {
     private int localPort;
     private boolean initialized;
     private UdpListener udpListener;
-    private HashMap<String, MessageListener> registeredListeners = new HashMap<>();
+    private HashMap<String, MessageListener> registeredListeners = new HashMap<String, MessageListener>();
 
     private DatagramSocket datagramSocket;
 
@@ -41,10 +41,8 @@ public class MessageHandler {
         if(initialized){
             try {
                 datagramSocket = new DatagramSocket(null);
-                datagramSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), localPort));
+                datagramSocket.bind(new InetSocketAddress(localIP, localPort));
             } catch (SocketException e) {
-                e.printStackTrace();
-            } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
         }
@@ -95,7 +93,7 @@ public class MessageHandler {
      * @param msg
      * @return
      */
-    public Response send(Message msg) {
+    public Response send(final Message msg) {
 
         if(msg.type != MessageType.REGISTER && msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response

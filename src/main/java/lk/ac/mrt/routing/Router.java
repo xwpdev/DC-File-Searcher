@@ -251,7 +251,7 @@ public class Router {
     }
 
     public List<Node> getRandomNodes(int limit) {
-        List<Node> nodeList = new ArrayList<>();
+        List<Node> nodeList = new ArrayList<Node>();
         int max = table.getSize();
         if (max <= limit) {
             for (int i = 0; i < max; i++) {
@@ -259,7 +259,7 @@ public class Router {
             }
         } else {
             Random rand = new Random();
-            Set<Node> set = new HashSet<>();
+            Set<Node> set = new HashSet<Node>();
             while (set.size() < limit) {
                 int i = rand.nextInt(table.getSize());
                 set.add(table.getNode(i));

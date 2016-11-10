@@ -8,7 +8,7 @@ import java.util.List;
  * Created by chamika on 11/3/16.
  */
 public class FilesList {
-    private List<String> fileNames = new ArrayList<>();
+    private List<String> fileNames = new ArrayList<String>();
 
 
     public List<String> getFileNames() {

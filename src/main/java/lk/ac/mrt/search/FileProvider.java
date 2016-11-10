@@ -28,14 +28,14 @@ public class FileProvider {
         }
 
         Random rand = new Random();
-        Set<String> set = new HashSet<>();
+        Set<String> set = new HashSet<String>();
         while (set.size() < limit) {
             int i = rand.nextInt(list.size());
             set.add(list.get(i));
         }
 
         FilesList filesList = new FilesList();
-        filesList.setFileNames(new ArrayList<>(set));
+        filesList.setFileNames(new ArrayList<String >(set));
         System.out.println("Randomly selected following files.");
         filesList.printFileNames();
         return filesList;
@@ -55,7 +55,7 @@ public class FileProvider {
     }
 
     private static List<String> readLines(String fileName) {
-        List<String> files = new ArrayList<>();
+        List<String> files = new ArrayList<String>();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(fileName));

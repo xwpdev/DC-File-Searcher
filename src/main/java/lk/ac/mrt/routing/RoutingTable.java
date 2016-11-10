@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class RoutingTable {
 
-    private ArrayList<Node> routingTable = new ArrayList<>(  );
+    private ArrayList<Node> routingTable = new ArrayList<Node>(  );
 
     public boolean addNode(Node node){
 

@@ -63,7 +63,7 @@ public class SearchResponse extends Response{
 		setSourceIP(split[++i]);
 		setSourcePort(Integer.parseInt(split[++i]));
 		hops = Integer.parseInt(split[++i]);
-		results = new ArrayList<>();
+		results = new ArrayList<String>();
 		i++;
 		for (; i < split.length; i++) {
 			results.add(split[i].replace('_',' '));

@@ -12,7 +12,7 @@ public class RegisterResponse extends Response {
 
     private int numberOfNodes;
 
-    List<Node> nodeList = new ArrayList<>();
+    List<Node> nodeList = new ArrayList<Node>();
 
 
     public RegisterResponse() {

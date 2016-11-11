@@ -99,7 +99,7 @@ public class MessageHandler {
         if(msg.type != MessageType.REGISTER && msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response
             final boolean listening = isListening();
-            final boolean needResponse = msg.type != MessageType.SEARCH;
+            final boolean needResponse = !(msg.type == MessageType.SEARCH || msg.type == MessageType.LIVE) ;
             if(listening && needResponse){
                 stopListening();
             }
@@ -225,6 +225,8 @@ public class MessageHandler {
             response = new LeaveResponse();
         } else if (unmarshallText.startsWith(ResponseType.SEARCH.code())) {
             response = new SearchResponse();
+        } else if (unmarshallText.startsWith(ResponseType.LIVE.code())) {
+            response = new HeartbeatResponse();
         }
 
         if (response != null) {
@@ -259,6 +261,8 @@ public class MessageHandler {
             message = new LeaveMessage();
         } else if (unmarshallText.startsWith(MessageType.SEARCH.code()) && !unmarshallText.startsWith(ResponseType.SEARCH.code())) {
             message = new SearchMessage();
+        } else if (unmarshallText.startsWith(MessageType.LIVE.code()) && !unmarshallText.startsWith(ResponseType.LIVE.code())) {
+            message = new HeartbeatMessage();
         }
 
         if (message != null) {
@@ -282,7 +286,9 @@ public class MessageHandler {
             udpListener.setLocalPort(localPort);
         }
 
-        udpListener.start();
+        if(!udpListener.isRunning()) {
+            udpListener.start();
+        }
     }
 
     /**

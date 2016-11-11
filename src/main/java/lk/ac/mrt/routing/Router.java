@@ -91,6 +91,44 @@ public class Router {
                 return response;
             }
         });
+
+        //LIVE message handling
+        MessageHandler.getInstance().registerForReceiving(MessageType.LIVE, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                HeartbeatMessage heartbeatMessage = (HeartbeatMessage) message;
+                HeartbeatResponse heartbeatResponse = new HeartbeatResponse();
+                heartbeatResponse.setSourceIP(messageHandler.getLocalIP());
+                heartbeatResponse.setSourcePort(messageHandler.getLocalPort());
+                heartbeatResponse.copyReturnData(message);
+                return heartbeatResponse;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                return null;
+            }
+        });
+
+        //LIVEOK message handling
+        MessageHandler.getInstance().registerForReceiving(ResponseType.LIVE, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                return null;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                if(response instanceof HeartbeatResponse) {
+                    HeartbeatResponse beatResponse = (HeartbeatResponse) response;
+                    Node node = table.getNode(beatResponse.getSourceIP(), beatResponse.getSourcePort());
+                    if (node != null) {
+                        node.setHeartbeats(node.getHeartbeats() + 1);
+                    }
+                }
+                return response;
+            }
+        });
     }
 
     public boolean register() {
@@ -291,6 +329,28 @@ public class Router {
             nodeList.addAll(set);
         }
         return nodeList;
+    }
+
+    public List<Node> getAllNodes() {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        for (int i = 0; i < table.getSize(); i++) {
+            nodes.add(table.getNode(i));
+        }
+        return nodes;
+    }
+
+    public void clearInactive() {
+        if (table != null) {
+            List<Node> allNodes = getAllNodes();
+            for (Node node : allNodes) {
+                if (node.getHeartbeats() == 0) {
+                    table.deleteNode(node);
+                    System.out.println("Removed node due to inactivity:Node=" + node.toString());
+                }else{
+                    node.setHeartbeats(0);
+                }
+            }
+        }
     }
 
     public void printRoutingTable(){

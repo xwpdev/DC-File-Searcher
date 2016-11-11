@@ -57,5 +57,15 @@ public class RoutingTable {
         return routingTable.get(index);
     }
 
+    public Node getNode(String ip, int port) {
+        for (int i = 0; i < routingTable.size(); i++) {
+            Node node = routingTable.get(i);
+            if (node.getIp().equals(ip) && node.getPort() == port) {
+                return node;
+            }
+        }
+        return null;
+    }
+
 
 }

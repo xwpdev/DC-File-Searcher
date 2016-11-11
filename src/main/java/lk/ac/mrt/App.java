@@ -5,6 +5,7 @@ import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.ErrorResponse;
 import lk.ac.mrt.network.MessageHandler;
 import lk.ac.mrt.network.Response;
+import lk.ac.mrt.routing.HeatbeatChecker;
 import lk.ac.mrt.routing.Node;
 import lk.ac.mrt.routing.Router;
 import lk.ac.mrt.routing.RoutingTable;
@@ -95,6 +96,7 @@ public class App
 
         //Enable UDP listening for all messages
 		MessageHandler.getInstance().startListening();
+		HeatbeatChecker.getInstance().startChecking();
 
 		// AHESH send UDP message
 //		MessageHandler.getInstance().sendUDPMsg("10.10.10.132",8080,"TEST UDP MESSAGE");
@@ -109,6 +111,7 @@ public class App
         }
 
 		MessageHandler.getInstance().stopListening();
+		HeatbeatChecker.getInstance().stopChecking();
     }
 
     private static void handleLeave(){
@@ -117,11 +120,12 @@ public class App
 		//TODO: add response from leave()
 		//if success from router.leave();
 		MessageHandler.getInstance().stopListening();
+		HeatbeatChecker.getInstance().stopChecking();
     }
 
     private static void printRoutingTable(){
         Router router = Router.getInstance();
-        System.out.println("======================Rout1ing Table====================================");
+        System.out.println("======================Routing Table====================================");
         router.printRoutingTable();
     }
 

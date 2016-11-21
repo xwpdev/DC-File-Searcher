@@ -74,24 +74,6 @@ public class Router {
             }
         });
 
-
-        //SEROK message handling
-        MessageHandler.getInstance().registerForReceiving(ResponseType.SEARCH, new MessageListener() {
-            @Override
-            public Response onMessageReceived(Message message) {
-              return null;
-            }
-
-            @Override
-            public Response onResponseReceived(Response response) {
-                if(response instanceof SearchResponse) {
-                    SearchResponse searchResponse = (SearchResponse) response;
-                    searchResponse.printResult();
-                }
-                return response;
-            }
-        });
-
         //LIVE message handling
         MessageHandler.getInstance().registerForReceiving(MessageType.LIVE, new MessageListener() {
             @Override
@@ -363,6 +345,13 @@ public class Router {
 		}else{
 			System.out.println("Not initialized yet. Please register and join to the system");
 		}
+    }
+
+    public int getRoutingTableSize(){
+        if(table == null){
+            return -1;
+        }
+        return table.getSize();
     }
 
 

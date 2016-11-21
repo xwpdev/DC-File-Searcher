@@ -26,7 +26,7 @@ public class SearchHandler
 
 	private FilesList filesList;
 	private Map<String,Message> messageMap;
-	private int maxHopCount;
+//	private int maxHopCount;
 
 	public static SearchHandler getInstance()
 	{
@@ -155,10 +155,7 @@ public class SearchHandler
 		MessageHandler messageHandler = MessageHandler.getInstance();
 		messageHandler.setLocalDetails( message );
 		message.setKeyword( keyword );
-		if ( maxHopCount <= 0 )
-		{
-			maxHopCount = Integer.parseInt( PropertyProvider.getProperty( Constants.CONFIG_MAX_HOP_COUNT ) );
-		}
+		int	maxHopCount = Integer.parseInt( PropertyProvider.getProperty( Constants.CONFIG_MAX_HOP_COUNT ) );
 		message.setHopCount( maxHopCount );
 
 		//send search message

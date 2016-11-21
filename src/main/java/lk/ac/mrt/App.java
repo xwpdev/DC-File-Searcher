@@ -54,6 +54,12 @@ public class App
 					case 5:
 						handleSearch(scanner);
 						break;
+					case 6:
+						handleUpdateHops(scanner);
+						break;
+					case 7:
+						handleUpdateForward(scanner);
+						break;
 					default:
 
 				}
@@ -65,6 +71,18 @@ public class App
 
 		}while(choice != 0);
 		System.out.println("Exit");
+	}
+
+	private static void handleUpdateHops(Scanner scanner){
+		System.out.print("\nPrevious hop count is " + PropertyProvider.getProperty( Constants.CONFIG_MAX_HOP_COUNT ) + ". Enter new maximum hop count:");
+		int count = scanner.nextInt();
+		PropertyProvider.setProperty( Constants.CONFIG_MAX_HOP_COUNT,String.valueOf(count) );
+	}
+
+	private static void handleUpdateForward(Scanner scanner){
+		System.out.print("\nPrevious forward count is " + PropertyProvider.getProperty(Constants.FORWARD_COUNT) + ". Enter new forward hop count:");
+		int count = scanner.nextInt();
+		PropertyProvider.setProperty( Constants.FORWARD_COUNT,String.valueOf(count) );
 	}
 
 	private static void handleSearch(Scanner scanner)
@@ -136,6 +154,8 @@ public class App
         System.out.println("3. Leave");
         System.out.println("4. Print Routing Table");
         System.out.println("5. Search");
+        System.out.println("6. Change hop count");
+        System.out.println("7. Change forward count");
         System.out.println("0. Exit");
         System.out.println("=======================================================================");
         System.out.println("Choose the number of your choice or press 0 to exit menu");

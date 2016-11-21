@@ -24,6 +24,13 @@ public class PropertyProvider {
         return prop.getProperty(key, defaultValue);
     }
 
+    public static void setProperty(String key, String value){
+        if (prop == null) {
+            initProperties();
+        }
+        prop.setProperty(key,value);
+    }
+
     public static String listProperties(){
         initProperties();
         if(prop != null){

@@ -249,7 +249,7 @@ public class Router {
                 int value = leaveResponse.getValue();
 
                 if (value == 0) {
-                    System.out.println("Successfully Joined");
+                    System.out.println("Successfully left");
                     break;
                 } else if (value == 9999) {
                     System.out.println("Leave Failed");

@@ -32,11 +32,11 @@ public class App
 
         Scanner scanner = new Scanner(System.in);
 
-		int choice;
+		int choice = 0;
 		do{
-			choice = scanner.nextInt();
 			try
 			{
+				choice = scanner.nextInt();
 				switch ( choice )
 				{
 					case 1:
@@ -59,6 +59,9 @@ public class App
 						break;
 					case 7:
 						handleUpdateForward(scanner);
+						break;
+					case 8:
+						recordStats();
 						break;
 					default:
 
@@ -147,6 +150,10 @@ public class App
         router.printRoutingTable();
     }
 
+    private static void recordStats(){
+		SearchHandler.getInstance().printAndResetCounts();
+	}
+
     private static void printMenu(){
         System.out.println("\n\n\n=======================================================================");
         System.out.println("1. Register");
@@ -156,6 +163,7 @@ public class App
         System.out.println("5. Search");
         System.out.println("6. Change hop count");
         System.out.println("7. Change forward count");
+        System.out.println("8. Print and reset stats");
         System.out.println("0. Exit");
         System.out.println("=======================================================================");
         System.out.println("Choose the number of your choice or press 0 to exit menu");

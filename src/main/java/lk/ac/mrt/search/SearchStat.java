@@ -23,6 +23,7 @@ public class SearchStat {
     private int resultCount;
     private int routingTableSize;
     private List<Long> responseTimes;
+    private List<Integer> hops;
     private String messageHash;
     private boolean searchInit;
 
@@ -82,10 +83,11 @@ public class SearchStat {
         this.resultCount = resultCount;
     }
 
-    public void addResultCount() {
+    public void addResultCount(int hops) {
         this.resultCount += 1;
         long diff = System.currentTimeMillis() - this.searchInitTime;
         getResponseTimes().add(diff);
+        getHops().add(hops);
     }
 
     public int getRoutingTableSize() {
@@ -111,6 +113,13 @@ public class SearchStat {
         this.fileName = fileName;
     }
 
+    public List<Integer> getHops() {
+        if (hops == null) {
+            hops = new ArrayList<Integer>();
+        }
+        return hops;
+    }
+
     public void write() {
         BufferedWriter bw = null;
         FileWriter fw = null;
@@ -127,6 +136,7 @@ public class SearchStat {
             append(sb, forwardCount);
             append(sb, resultCount);
             append(sb, responseTimes);
+            append(sb, hops);
             bw.write(sb.toString());
             bw.newLine();
             bw.flush();

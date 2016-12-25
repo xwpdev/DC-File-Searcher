@@ -18,6 +18,8 @@ public class LeaveMessage extends Message {
     public void unmarshall(String messsageData) {
         String[] splits = messsageData.split(String.valueOf(WHITESPACE));
         setSourceIP(splits[1]);
-        setSourcePort(Integer.parseInt(splits[2]));
+        if(splits.length > 2 ) {
+            setSourcePort(Integer.parseInt(splits[2]));
+        }
     }
 }

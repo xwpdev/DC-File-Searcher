@@ -124,6 +124,7 @@ public class MessageHandler {
                 DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
 
                 try {
+                    datagramSocket.setSoTimeout(10000);
                     datagramSocket.receive(incomingPacket);
 
                     InetAddress ipAddress = incomingPacket.getAddress();
@@ -141,6 +142,11 @@ public class MessageHandler {
 //                    if (datagramSocket == null) {
 //                        datagramSocket.close();
 //                    }
+                    try {
+                        datagramSocket.setSoTimeout(0);
+                    } catch (SocketException e1) {
+                        e1.printStackTrace();
+                    }
                     if (listening && needResponse) {
                         startListening();
                     }

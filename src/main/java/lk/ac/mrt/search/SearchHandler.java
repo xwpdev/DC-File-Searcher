@@ -23,6 +23,9 @@ public class SearchHandler
 	private Map<String,Message> messageMap;
 	private Map<String,Message> searchMap;
     private SearchStat searchStat;
+    private int countReceived;
+    private int countForwarded;
+    private int countAnswered;
 
 
 	public static SearchHandler getInstance()
@@ -58,6 +61,7 @@ public class SearchHandler
                 }
 
                 searchStat.addReceiveCount();
+                countReceived++;
 
 //				if (!checkDupe(messageHash)) {
 //					messageMap.put(messageHash, message);
@@ -76,9 +80,10 @@ public class SearchHandler
 							MessageHandler messageHandler = MessageHandler.getInstance();
 							if (!(message.getSourceIP().equals(messageHandler.getLocalIP()) && message.getSourcePort() == messageHandler.getLocalPort())) {
 								MessageHandler.getInstance().send(searchMessage);
+								countForwarded++;
+								searchStat.addForwardCount();
 							}
 
-							searchStat.addForwardCount();
 
 						}
 					}
@@ -108,6 +113,8 @@ public class SearchHandler
                             }
                         }, 10, TimeUnit.SECONDS);
 
+						countAnswered++;
+
                         return response;
                     }
                 }
@@ -120,8 +127,8 @@ public class SearchHandler
 						public void run() {
 							if(searchStat != null && !searchStat.isSearchInit()) {
 								searchStat.write();
+								searchStat = null;
 							}
-							searchStat = null;
 						}
 					}, 10, TimeUnit.SECONDS);
 				}
@@ -150,7 +157,7 @@ public class SearchHandler
 					searchResponse.printResult();
 
 					if(searchStat != null) {
-						searchStat.addResultCount();
+						searchStat.addResultCount(searchResponse.getHops());
 					}
 				}
 				return response;
@@ -220,6 +227,7 @@ public class SearchHandler
             public void run() {
 				if(searchStat != null) {
 					searchStat.write();
+					searchStat = null;
 				}
             }
         }, 10, TimeUnit.SECONDS);
@@ -240,4 +248,15 @@ public class SearchHandler
 		searchStat.setRoutingTableSize(Router.getInstance().getRoutingTableSize());
     }
 
+	public void printAndResetCounts(){
+		MessageStat messageStat = new MessageStat();
+		messageStat.setFileName(PropertyProvider.getProperty("USERNAME")+"_message");
+		messageStat.setCountReceived(countReceived);
+		messageStat.setCountForwarded(countForwarded);
+		messageStat.setCountAnswered(countAnswered);
+		messageStat.write();
+		countReceived=0;
+		countForwarded=0;
+		countAnswered=0;
+	}
 }

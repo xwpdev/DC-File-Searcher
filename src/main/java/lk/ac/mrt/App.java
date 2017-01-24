@@ -1,5 +1,6 @@
 package lk.ac.mrt;
 
+import lk.ac.mrt.comment.GossipInitiator;
 import lk.ac.mrt.common.Constants;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.ErrorResponse;
@@ -121,6 +122,9 @@ public class App
 
 		// AHESH send UDP message
 //		MessageHandler.getInstance().sendUDPMsg("10.10.10.132",8080,"TEST UDP MESSAGE");
+
+		//Enable gossiping
+		GossipInitiator.getInstance().startGossiping();
 
 	}
 

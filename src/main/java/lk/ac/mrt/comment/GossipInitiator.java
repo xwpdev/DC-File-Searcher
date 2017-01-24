@@ -5,9 +5,7 @@ import lk.ac.mrt.network.MessageHandler;
 import lk.ac.mrt.routing.Node;
 import lk.ac.mrt.routing.Router;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Created by chamika on 1/24/17.
@@ -15,6 +13,7 @@ import java.util.TimerTask;
 public class GossipInitiator {
     private static GossipInitiator INSTANCE;
     private Timer timer;
+    private Map<Node, Long> syncTimestamps = new HashMap<Node, Long>();
 
     public static GossipInitiator getInstance() {
         if (INSTANCE == null) {
@@ -46,18 +45,39 @@ public class GossipInitiator {
     }
 
     private void sendGossip() {
-        //select a node which are not synced
-        //share comment store
-
+        //select a node which are not synced recently
+        Node selectedNode = null;
         List<Node> allNodes = Router.getInstance().getAllNodes();
-        MessageHandler handler = MessageHandler.getInstance();
-        Posts message = new Posts();
         for (Node node : allNodes) {
-            message.setSourceIP(handler.getLocalIP());
-            message.setSourcePort(handler.getLocalPort());
-            message.setDestinationIP(node.getIp());
-            message.setDestinationPort(node.getPort());
-            handler.send(message);
+            if (!syncTimestamps.containsKey(node)) {
+                selectedNode = node;
+                break;
+            } else if (selectedNode == null) {
+                selectedNode = node;
+            } else {
+                if (syncTimestamps.get(node) < syncTimestamps.get(selectedNode)) {
+                    selectedNode = node;
+                }
+            }
         }
+
+        if(selectedNode == null){
+            System.out.println("No nodes found for gossipping");
+            return;
+        }else {
+            System.out.println(selectedNode.toString() + " selected for gossiping");
+        }
+
+        //share comment store
+        MessageHandler handler = MessageHandler.getInstance();
+        Posts message = PostStore.getPosts();
+        message.setSourceIP(handler.getLocalIP());
+        message.setSourcePort(handler.getLocalPort());
+        message.setDestinationIP(selectedNode.getIp());
+        message.setDestinationPort(selectedNode.getPort());
+//        handler.send(message);
+        System.out.println("Gossip done with " + selectedNode.getNodeID());
+
+        syncTimestamps.put(selectedNode, System.currentTimeMillis());
     }
 }

@@ -1,5 +1,7 @@
 package lk.ac.mrt.routing;
 
+import lk.ac.mrt.comment.PostStore;
+import lk.ac.mrt.comment.PostsResponse;
 import lk.ac.mrt.common.PropertyProvider;
 import lk.ac.mrt.network.*;
 
@@ -8,7 +10,7 @@ import java.util.*;
 
 /**
  * Responsible for routing the messages between nodes and bootsrap server
- *
+ * <p>
  * Created by dinu on 11/2/16.
  */
 public class Router {
@@ -20,21 +22,19 @@ public class Router {
 
     public Router() {
         messageHandler = MessageHandler.getInstance();
-		table = new RoutingTable();
-		initListener();
+        table = new RoutingTable();
+        initListener();
     }
 
-    public static Router getInstance()
-    {
-        if ( instance == null )
-        {
+    public static Router getInstance() {
+        if (instance == null) {
             instance = new Router();
         }
         return instance;
     }
 
     private void initListener() {
-		//JOIN message handling
+        //JOIN message handling
         MessageHandler.getInstance().registerForReceiving(MessageType.JOIN, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
@@ -54,19 +54,19 @@ public class Router {
             }
         });
 
-		//LEAVE message handling
-		MessageHandler.getInstance().registerForReceiving(MessageType.LEAVE, new MessageListener() {
-			@Override
-			public Response onMessageReceived(Message message) {
-				LeaveMessage leaveMessage = (LeaveMessage) message;
-				Node node = new Node(leaveMessage.getSourceIP(), leaveMessage.getSourcePort());
-				table.deleteNode(node);
+        //LEAVE message handling
+        MessageHandler.getInstance().registerForReceiving(MessageType.LEAVE, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                LeaveMessage leaveMessage = (LeaveMessage) message;
+                Node node = new Node(leaveMessage.getSourceIP(), leaveMessage.getSourcePort());
+                table.deleteNode(node);
 
-				LeaveResponse response = new LeaveResponse();
-				response.setValue(0);
+                LeaveResponse response = new LeaveResponse();
+                response.setValue(0);
                 response.copyReturnData(message);
-				return response;
-			}
+                return response;
+            }
 
             @Override
             public Response onResponseReceived(Response response) {
@@ -101,7 +101,7 @@ public class Router {
 
             @Override
             public Response onResponseReceived(Response response) {
-                if(response instanceof HeartbeatResponse) {
+                if (response instanceof HeartbeatResponse) {
                     HeartbeatResponse beatResponse = (HeartbeatResponse) response;
                     Node node = table.getNode(beatResponse.getSourceIP(), beatResponse.getSourcePort());
                     if (node != null) {
@@ -125,24 +125,24 @@ public class Router {
         //Send register message
 
         Response response = messageHandler.send(registerMessage);
-        if ( response instanceof ErrorResponse){
+        if (response instanceof ErrorResponse) {
             ErrorResponse errorResponse = (ErrorResponse) response;
             System.out.println("Error response received");
             return false;
-        }else if (response instanceof  RegisterResponse){
+        } else if (response instanceof RegisterResponse) {
             //Handle response
             RegisterResponse registerResponse = (RegisterResponse) response;
             int nodes = registerResponse.getNumberOfNodes();
-            if(nodes == 9999){
+            if (nodes == 9999) {
                 System.out.println("failed, there is some error in the command");
                 return false;
-            }else if (nodes == 9998){
+            } else if (nodes == 9998) {
                 System.out.println("failed, already registered to you, unregister firs");
                 return false;
-            }else if (nodes == 9997){
+            } else if (nodes == 9997) {
                 System.out.println("failed, registered to another user, try a different IP and port");
                 return false;
-            }else if(nodes == 9996 ){
+            } else if (nodes == 9996) {
                 System.out.println("failed, can’t register. BS full.");
                 return false;
             }
@@ -153,7 +153,7 @@ public class Router {
                 table.addNode(node);
             }
             return true;
-        }else{
+        } else {
             System.out.println("Unhandled Response Type for the Request");
             return false;
         }
@@ -205,8 +205,8 @@ public class Router {
         // Send join message
         Response response = messageHandler.send(joinMessage);
 
-        if(response instanceof JoinResponse){
-            JoinResponse joinResponse = (JoinResponse)  response;
+        if (response instanceof JoinResponse) {
+            JoinResponse joinResponse = (JoinResponse) response;
 
             // Handle join response
             int value = joinResponse.getValue();
@@ -222,7 +222,7 @@ public class Router {
                 System.out.println("Unhandled value");
                 return false;
             }
-        }else if (response instanceof ErrorResponse){
+        } else if (response instanceof ErrorResponse) {
             System.out.println("Error response received");
             return false;
         }
@@ -242,7 +242,7 @@ public class Router {
             // Send Leave message
             Response response = messageHandler.send(leaveMessage);
 
-            if(response instanceof LeaveResponse){
+            if (response instanceof LeaveResponse) {
                 LeaveResponse leaveResponse = (LeaveResponse) response;
 
                 // Handle join response
@@ -258,8 +258,8 @@ public class Router {
                     System.out.println("Unhandled value");
                     break;
                 }
-            }else if (response instanceof ErrorResponse){
-                System.out.println("Error response received from "+leaveMessage.getDestinationIP());
+            } else if (response instanceof ErrorResponse) {
+                System.out.println("Error response received from " + leaveMessage.getDestinationIP());
             }
 
         }
@@ -328,33 +328,29 @@ public class Router {
                 if (node.getHeartbeats() == 0) {
                     table.deleteNode(node);
                     System.out.println("Removed node due to inactivity:Node=" + node.toString());
-                }else{
+                } else {
                     node.setHeartbeats(0);
                 }
             }
         }
     }
 
-    public void printRoutingTable(){
-		if(table != null)
-		{
-			for ( int i = 0; i < table.getSize(); i++ )
-			{
-				System.out.println( "" + table.getNode( i ).getIp() + "                " + table.getNode( i ).getPort() );
-			}
-		}else{
-			System.out.println("Not initialized yet. Please register and join to the system");
-		}
+    public void printRoutingTable() {
+        if (table != null) {
+            for (int i = 0; i < table.getSize(); i++) {
+                System.out.println("" + table.getNode(i).getIp() + "                " + table.getNode(i).getPort());
+            }
+        } else {
+            System.out.println("Not initialized yet. Please register and join to the system");
+        }
     }
 
-    public int getRoutingTableSize(){
-        if(table == null){
+    public int getRoutingTableSize() {
+        if (table == null) {
             return -1;
         }
         return table.getSize();
     }
-
-
 
 
 }

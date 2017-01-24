@@ -1,7 +1,7 @@
 package lk.ac.mrt.comment;
 
 import lk.ac.mrt.common.PropertyProvider;
-import lk.ac.mrt.network.MessageHandler;
+import lk.ac.mrt.network.*;
 import lk.ac.mrt.routing.Node;
 import lk.ac.mrt.routing.Router;
 
@@ -23,6 +23,46 @@ public class GossipInitiator {
     }
 
     private GossipInitiator() {
+        //GOSSIP message handling
+        MessageHandler.getInstance().registerForReceiving(MessageType.GOSSIP, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                Posts posts = ((PostsMessage) message).getPosts();
+                PostStore.merge(posts);
+                MessageHandler messageHandler = MessageHandler.getInstance();
+                PostsResponse postsResponse = new PostsResponse(PostStore.getPosts());
+                postsResponse.setSourceIP(messageHandler.getLocalIP());
+                postsResponse.setSourcePort(messageHandler.getLocalPort());
+                postsResponse.copyReturnData(message);
+                return postsResponse;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                Posts posts = ((PostsResponse) response).getPosts();
+                PostStore.merge(posts);
+                return response;
+            }
+        });
+
+        MessageHandler.getInstance().registerForReceiving(ResponseType.GOSSIP, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                Posts posts = ((PostsMessage) message).getPosts();
+                PostStore.merge(posts);
+                MessageHandler messageHandler = MessageHandler.getInstance();
+                PostsResponse postsResponse = new PostsResponse(PostStore.getPosts());
+                postsResponse.setSourceIP(messageHandler.getLocalIP());
+                postsResponse.setSourcePort(messageHandler.getLocalPort());
+                postsResponse.copyReturnData(message);
+                return postsResponse;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                return null;
+            }
+        });
     }
 
     public void startGossiping() {
@@ -70,7 +110,7 @@ public class GossipInitiator {
 
         //share comment store
         MessageHandler handler = MessageHandler.getInstance();
-        Posts message = PostStore.getPosts();
+        PostsMessage message = new PostsMessage(PostStore.getPosts());
         message.setSourceIP(handler.getLocalIP());
         message.setSourcePort(handler.getLocalPort());
         message.setDestinationIP(selectedNode.getIp());

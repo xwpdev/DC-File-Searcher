@@ -5,9 +5,16 @@ package lk.ac.mrt.comment;
  */
 public class PostStore {
 
-    private Posts posts;
+    private static Posts posts;
 
-    public void merge(Posts remotePosts){
+    public static Posts getPosts() {
+        if(posts == null){
+            posts = new Posts();
+        }
+        return posts;
+    }
+
+    public static void merge(Posts remotePosts){
         //TODO merge local posts with remote posts and update
     }
 

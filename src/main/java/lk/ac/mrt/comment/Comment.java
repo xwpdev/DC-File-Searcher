@@ -52,4 +52,8 @@ public class Comment extends Entity {
         }
         return false;
     }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

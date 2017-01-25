@@ -15,13 +15,6 @@ public class GossipInitiator {
     private Timer timer;
     private Map<Node, Long> syncTimestamps = new HashMap<Node, Long>();
 
-    public static GossipInitiator getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new GossipInitiator();
-        }
-        return INSTANCE;
-    }
-
     private GossipInitiator() {
         //GOSSIP message handling
         MessageHandler.getInstance().registerForReceiving(MessageType.GOSSIP, new MessageListener() {
@@ -45,7 +38,7 @@ public class GossipInitiator {
             }
         });
 
-        MessageHandler.getInstance().registerForReceiving(ResponseType.GOSSIP, new MessageListener() {
+        MessageHandler.getInstance().registerForReceiving(ResponseType.GOSSOK, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
                 Posts posts = ((PostsMessage) message).getPosts();
@@ -63,6 +56,13 @@ public class GossipInitiator {
                 return null;
             }
         });
+    }
+
+    public static GossipInitiator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new GossipInitiator();
+        }
+        return INSTANCE;
     }
 
     public void startGossiping() {

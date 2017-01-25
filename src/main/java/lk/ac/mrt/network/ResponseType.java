@@ -5,7 +5,7 @@ package lk.ac.mrt.network;
  */
 public enum ResponseType {
     REGISTER("REGOK"), UNREGISTER("UNROK"), JOIN("JOINOK"), LEAVE("LEAVEOK"), SEARCH("SEROK"), ERROR("ERROR"),
-    LIVE("LIVEOK"), GOSSIP("GOSSIP");
+    LIVE("LIVEOK"), GOSSOK("GOSSOK");
 
     private String typeCode;
 

@@ -2,6 +2,7 @@ package lk.ac.mrt.comment;
 
 import lk.ac.mrt.network.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,22 @@ public class File extends Entity{
         return fileName;
     }
 
-    public List<Comment> getCommentList(){
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public List<Comment> getCommentList() {
+        if (commentList == null) {
+            commentList = new ArrayList<Comment>();
+        }
         return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
+    public void generateId(int timestamp, String source) {
+        this.id = new Id(timestamp, source, "F", String.valueOf(fileName.hashCode()));
     }
 }

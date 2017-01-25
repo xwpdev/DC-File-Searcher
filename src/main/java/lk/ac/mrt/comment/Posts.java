@@ -1,8 +1,8 @@
 package lk.ac.mrt.comment;
 
 import lk.ac.mrt.network.Entity;
-import lk.ac.mrt.network.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,15 +22,18 @@ public class Posts extends Entity {
         throw new RuntimeException("Not implemented");
     }
 
-    public List<File> getFileList(){
+    public List<File> getFileList() {
+        if (fileList == null) {
+            fileList = new ArrayList<File>();
+        }
         return fileList;
     }
 
-    public void addFile(File file){
-        fileList.add(file);
+    public void addFile(File file) {
+        getFileList().add(file);
     }
 
-    public void removeFile(File file){
-        fileList.remove(file);
+    public void removeFile(File file) {
+        getFileList().remove(file);
     }
 }

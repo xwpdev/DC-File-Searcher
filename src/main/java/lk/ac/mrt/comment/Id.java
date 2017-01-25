@@ -11,6 +11,16 @@ public class Id extends Entity {
     private String type;//F=file, C=Comment
     private String hash;
 
+    public Id() {
+    }
+
+    public Id(long timestamp, String source, String type, String hash) {
+        this.timestamp = timestamp;
+        this.source = source;
+        this.type = type;
+        this.hash = hash;
+    }
+
     @Override
     public String marshall() {
         throw new RuntimeException("Not implemented");
@@ -28,5 +38,21 @@ public class Id extends Entity {
             return source.equals(newId.source) && type.equals(newId.type) && hash.equals(newId.hash);
         }
         return false;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getHash() {
+        return hash;
     }
 }

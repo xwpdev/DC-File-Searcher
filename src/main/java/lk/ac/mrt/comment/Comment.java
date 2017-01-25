@@ -2,6 +2,7 @@ package lk.ac.mrt.comment;
 
 import lk.ac.mrt.network.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,9 +12,15 @@ public class Comment extends Entity {
     private Id parentId;
     private Id id;
     private String body;
+    private List<Rank> ranks;
+    private List<Comment> comments;
 
     public Id getParentId() {
         return parentId;
+    }
+
+    public void setParentId(Id parentId) {
+        this.parentId = parentId;
     }
 
     public Id getId() {
@@ -24,16 +31,35 @@ public class Comment extends Entity {
         return body;
     }
 
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     public List<Rank> getRanks() {
+        if (ranks == null) {
+            ranks = new ArrayList<Rank>();
+        }
         return ranks;
     }
 
+    public void setRanks(List<Rank> ranks) {
+        this.ranks = ranks;
+    }
+
     public List<Comment> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<Comment>();
+        }
         return comments;
     }
 
-    private List<Rank> ranks;
-    private List<Comment> comments;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void generateId(int timestamp, String source) {
+        this.id = new Id(timestamp, source, "C", String.valueOf(body.hashCode()));
+    }
 
     @Override
     public String marshall() {
@@ -51,9 +77,5 @@ public class Comment extends Entity {
             return id.equals(((Comment) obj).id);
         }
         return false;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 }

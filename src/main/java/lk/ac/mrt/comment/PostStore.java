@@ -59,7 +59,7 @@ public class PostStore {
         List<Comment> remoteCommentList = remoteComment.getComments();
         for(Comment remotereplycomment: remoteCommentList){
             for(Comment replyComment: commentList){
-                if(remotereplycomment.getId().equals(replyComment)){
+                if (remotereplycomment.getId().equals(replyComment.getId())) {
                     hasComment = true;
                     List<Comment> childComments = replyComment.getComments();
                     List<Comment> remoteChildComments = remotereplycomment.getComments();
@@ -88,7 +88,7 @@ public class PostStore {
         List<Rank> remoteRankList = remoteComment.getRanks();
         for (Rank remoteRank: remoteRankList){
             for(Rank rank:rankList){
-                if(remoteRank.getStringSource().equals(rank.getStringSource())){
+                if (remoteRank.getSource().equals(rank.getSource())) {
                     hasRank = true;
                 }
             }

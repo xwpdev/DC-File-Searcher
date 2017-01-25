@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by chamika on 1/19/17.
  */
-public class Comment extends Entity{
+public class Comment extends Entity {
     private Id parentId;
     private Id id;
     private String body;
@@ -21,5 +21,13 @@ public class Comment extends Entity{
     @Override
     public void unmarshall(String messsageData) {
         throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Comment) {
+            return id.equals(((Comment) obj).id);
+        }
+        return false;
     }
 }

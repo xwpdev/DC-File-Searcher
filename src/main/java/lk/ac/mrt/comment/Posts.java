@@ -21,4 +21,16 @@ public class Posts extends Entity {
     public void unmarshall(String messsageData) {
         throw new RuntimeException("Not implemented");
     }
+
+    public List<File> getFileList(){
+        return fileList;
+    }
+
+    public void addFile(File file){
+        fileList.add(file);
+    }
+
+    public void removeFile(File file){
+        fileList.remove(file);
+    }
 }

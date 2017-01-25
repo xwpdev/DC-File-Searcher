@@ -1,5 +1,7 @@
 package lk.ac.mrt.network;
 
+import lk.ac.mrt.comment.File;
+
 /**
  * Created by chamika on 11/3/16.
  */
@@ -25,4 +27,5 @@ public abstract class Entity {
             return sb.toString();
         }
     }
+
 }

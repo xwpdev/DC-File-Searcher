@@ -22,4 +22,16 @@ public class File extends Entity{
     public void unmarshall(String messsageData) {
         throw new RuntimeException("Not implemented");
     }
+
+    public Id getId(){
+        return id;
+    }
+
+    public String getFileName(){
+        return fileName;
+    }
+
+    public List<Comment> getCommentList(){
+        return commentList;
+    }
 }

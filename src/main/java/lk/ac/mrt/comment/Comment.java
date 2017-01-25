@@ -11,7 +11,29 @@ public class Comment extends Entity {
     private Id parentId;
     private Id id;
     private String body;
+
+    public Id getParentId() {
+        return parentId;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public List<Rank> getRanks() {
+        return ranks;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     private List<Rank> ranks;
+    private List<Comment> comments;
 
     @Override
     public String marshall() {

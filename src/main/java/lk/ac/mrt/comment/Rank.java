@@ -18,4 +18,12 @@ public class Rank extends Entity{
     public void unmarshall(String messsageData) {
         throw new RuntimeException("Not implemented");
     }
+
+    public String getStringSource(){
+        return source;
+    }
+
+    public int getRank(){
+        return rank;
+    }
 }

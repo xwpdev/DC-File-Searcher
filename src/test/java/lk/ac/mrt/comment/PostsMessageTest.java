@@ -40,7 +40,7 @@ public class PostsMessageTest extends TestCase {
 
         Rank rank2 = new Rank();
         rank2.setRank(5);
-        rank2.setSource("node2");
+        rank2.setSource(source2);
         comment2.getRanks().add(rank2);
 
     }
@@ -54,7 +54,7 @@ public class PostsMessageTest extends TestCase {
 
     public void testUnmarshall() throws Exception {
         PostsMessage postsMessage = new PostsMessage(null);
-        postsMessage.unmarshall("GOSSIP 192.168.1.1 8080 {\"fileList\":[{\"id\":{\"timestamp\":0,\"source\":\"node1\",\"type\":\"F\",\"hash\":\"-1462237332\"},\"fileName\":\"Harry Potter\",\"commentList\":[{\"parentId\":null,\"id\":{\"timestamp\":1,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"-833364785\"},\"body\":\"First comment\",\"ranks\":[],\"comments\":[{\"parentId\":null,\"id\":{\"timestamp\":2,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"783730336\"},\"body\":\"Reply to first comment\",\"ranks\":[{\"source\":\"node1\",\"rank\":3},{\"source\":\"node2\",\"rank\":5}],\"comments\":[]}]}]}]}");
+        postsMessage.unmarshall("GOSSIP 192.168.1.1 8080 {\"fileList\":[{\"id\":{\"timestamp\":0,\"source\":\"node1\",\"type\":\"F\",\"hash\":\"-1462237332\"},\"fileName\":\"Harry Potter\",\"commentList\":[{\"parentId\":null,\"id\":{\"timestamp\":1,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"-833364785\"},\"body\":\"First comment\",\"ranks\":[],\"comments\":[{\"parentId\":null,\"id\":{\"timestamp\":2,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"783730336\"},\"body\":\"Reply to first comment\",\"ranks\":[{\"source\":\"node1\",\"rank\":3},{\"source\":\"node2\",\"rank\":5}],\"comments\":[]}]}],\"ranks\":[]}]}");
         assertNotNull(postsMessage.getPosts());
     }
 

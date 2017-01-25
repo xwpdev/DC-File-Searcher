@@ -8,11 +8,12 @@ import java.util.List;
 /**
  * Created by chamika on 1/24/17.
  */
-public class File extends Entity{
+public class File extends Entity {
 
     private Id id;
     private String fileName;
     private List<Comment> commentList;
+    private List<Rank> ranks;
 
     @Override
     public String marshall() {
@@ -24,11 +25,11 @@ public class File extends Entity{
         throw new RuntimeException("Not implemented");
     }
 
-    public Id getId(){
+    public Id getId() {
         return id;
     }
 
-    public String getFileName(){
+    public String getFileName() {
         return fileName;
     }
 
@@ -45,6 +46,13 @@ public class File extends Entity{
 
     public void setCommentList(List<Comment> commentList) {
         this.commentList = commentList;
+    }
+
+    public List<Rank> getRanks() {
+        if (ranks == null) {
+            ranks = new ArrayList<Rank>();
+        }
+        return ranks;
     }
 
     public void generateId(int timestamp, String source) {

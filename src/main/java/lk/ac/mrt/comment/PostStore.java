@@ -1,5 +1,6 @@
 package lk.ac.mrt.comment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,21 +23,23 @@ public class PostStore {
             for(File file: posts.getFileList()){
                 if(remoteFile.getId().equals(file.getId())){
                     hasFile = true;
+                    mergeRanks(file,remoteFile);
                     mergeComments(file,remoteFile);
                 }
 
             }
             if(!hasFile){
                 posts.addFile(remoteFile);
-                remotePosts.removeFile(remoteFile);
             }
         }
 
     }
 
+
     private static void mergeComments(File file, File remoteFile) {
         boolean hasComment = false;
         List<Comment> commentList = file.getCommentList();
+        List<Comment> temp = new ArrayList<Comment>(commentList);
         List<Comment> remoteCommentList = remoteFile.getCommentList();
         for (Comment remoteComment:remoteCommentList){
             for(Comment comment:commentList){
@@ -47,15 +50,16 @@ public class PostStore {
                 }
             }
             if(!hasComment){
-                commentList.add(remoteComment);
-                remoteCommentList.remove(remoteComment);
+                temp.add(remoteComment);
             }
         }
+        file.setCommentList(temp);
     }
 
     private static void mergeComments(Comment comment, Comment remoteComment) {
         boolean hasComment = false;
         List<Comment> commentList = comment.getComments();
+        List<Comment> temp = new ArrayList<Comment>(commentList);
         List<Comment> remoteCommentList = remoteComment.getComments();
         for(Comment remotereplycomment: remoteCommentList){
             for(Comment replyComment: commentList){
@@ -75,17 +79,37 @@ public class PostStore {
                 }
             }
             if (!hasComment){
-                commentList.add(remotereplycomment);
-                remoteCommentList.remove(remotereplycomment);
+                temp.add(remotereplycomment);
             }
 
         }
+        commentList = temp;
     }
 
     private static void mergeRanks(Comment comment, Comment remoteComment) {
         boolean hasRank = false;
         List<Rank> rankList = comment.getRanks();
+        List<Rank> temp = new ArrayList<Rank>(rankList);
         List<Rank> remoteRankList = remoteComment.getRanks();
+        for (Rank remoteRank: remoteRankList){
+            for(Rank rank:rankList){
+                if (remoteRank.getSource().equals(rank.getSource())) {
+                    hasRank = true;
+                }
+            }
+            if(!hasRank){
+                temp.add(remoteRank);
+            }
+        }
+        rankList = temp;
+
+    }
+
+    private static void mergeRanks(File file, File remoteFile) {
+        boolean hasRank = false;
+        List<Rank> rankList = file.getRanks();
+        List<Rank> temp = new ArrayList<Rank>(rankList);
+        List<Rank> remoteRankList = remoteFile.getRanks();
         for (Rank remoteRank: remoteRankList){
             for(Rank rank:rankList){
                 if (remoteRank.getSource().equals(rank.getSource())) {
@@ -97,7 +121,7 @@ public class PostStore {
                 remoteRankList.remove(remoteRank);
             }
         }
-
+        rankList = temp;
     }
 
 }

@@ -1,15 +1,12 @@
 package lk.ac.mrt;
 
-import lk.ac.mrt.comment.GossipInitiator;
+import lk.ac.mrt.comment.*;
 import lk.ac.mrt.common.Constants;
 import lk.ac.mrt.common.PropertyProvider;
-import lk.ac.mrt.network.ErrorResponse;
 import lk.ac.mrt.network.MessageHandler;
-import lk.ac.mrt.network.Response;
 import lk.ac.mrt.routing.HeatbeatChecker;
 import lk.ac.mrt.routing.Node;
 import lk.ac.mrt.routing.Router;
-import lk.ac.mrt.routing.RoutingTable;
 import lk.ac.mrt.search.SearchHandler;
 
 import java.util.List;
@@ -23,6 +20,8 @@ public class App
 {
     public static void main( String[] args )
     {
+		initTestPost();
+
         System.out.println( "Distributed File Searcher " );
         System.out.println(PropertyProvider.listProperties());
 		//for initialization
@@ -174,4 +173,37 @@ public class App
         System.out.println("=======================================================================");
 
     }
+
+	private static void initTestPost() {
+		Posts posts = PostStore.getPosts();
+
+		String source1 = "node1";
+		String source2 = "node2";
+		int timestamp = -1;
+
+		File file1 = new File();
+		file1.setFileName("Harry Potter");
+		file1.generateId(++timestamp, source1);
+		posts.addFile(file1);
+
+		Comment comment1 = new Comment();
+		comment1.setBody("First comment1");
+		comment1.generateId(++timestamp, source1);
+		file1.getCommentList().add(comment1);
+
+		Comment comment2 = new Comment();
+		comment2.setBody("Reply to first comment2");
+		comment2.generateId(++timestamp, source1);
+		comment1.getComments().add(comment2);
+
+		Rank rank1 = new Rank();
+		rank1.setRank(3);
+		rank1.setSource(source1);
+		comment2.getRanks().add(rank1);
+
+		Rank rank2 = new Rank();
+		rank2.setRank(5);
+		rank2.setSource(source2);
+		comment2.getRanks().add(rank2);
+	}
 }

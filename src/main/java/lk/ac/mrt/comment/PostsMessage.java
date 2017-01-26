@@ -13,6 +13,10 @@ public class PostsMessage extends Message {
 
     private Posts posts;
 
+    public PostsMessage() {
+        this.type = MessageType.GOSSIP;
+    }
+
     public PostsMessage(Posts posts) {
         this.type = MessageType.GOSSIP;
         this.posts = posts;

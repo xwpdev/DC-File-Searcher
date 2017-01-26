@@ -25,6 +25,7 @@ public class PostStore {
                     hasFile = true;
                     mergeRanks(file,remoteFile);
                     mergeComments(file,remoteFile);
+                    System.out.println("Merged:FILE:" + file.getFileName());
                 }
 
             }
@@ -69,10 +70,13 @@ public class PostStore {
                     List<Comment> remoteChildComments = remotereplycomment.getComments();
                     if(!remoteChildComments.isEmpty() && childComments.isEmpty()){
                         replyComment.setComments(remoteChildComments);
+                        System.out.println("Merged:COMMENT:new size=" + remoteChildComments.size());
                     }else if(!remoteChildComments.isEmpty() && !childComments.isEmpty()){
                         for(Comment remoteChildComment: remoteChildComments){
                             for(Comment chilcComment:childComments){
-                                mergeComments(chilcComment,remoteChildComment);
+                                if (remoteChildComment.equals(chilcComment)) {
+                                    mergeComments(chilcComment, remoteChildComment);
+                                }
                             }
                         }
                     }

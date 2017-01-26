@@ -20,29 +20,10 @@ public class GossipInitiator {
         MessageHandler.getInstance().registerForReceiving(MessageType.GOSSIP, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
+                System.out.println("onMessageReceived GOSSIP");
                 Posts posts = ((PostsMessage) message).getPosts();
                 PostStore.merge(posts);
-                MessageHandler messageHandler = MessageHandler.getInstance();
-                PostsResponse postsResponse = new PostsResponse(PostStore.getPosts());
-                postsResponse.setSourceIP(messageHandler.getLocalIP());
-                postsResponse.setSourcePort(messageHandler.getLocalPort());
-                postsResponse.copyReturnData(message);
-                return postsResponse;
-            }
-
-            @Override
-            public Response onResponseReceived(Response response) {
-                Posts posts = ((PostsResponse) response).getPosts();
-                PostStore.merge(posts);
-                return response;
-            }
-        });
-
-        MessageHandler.getInstance().registerForReceiving(ResponseType.GOSSOK, new MessageListener() {
-            @Override
-            public Response onMessageReceived(Message message) {
-                Posts posts = ((PostsMessage) message).getPosts();
-                PostStore.merge(posts);
+                //TODO update source IP is synced
                 MessageHandler messageHandler = MessageHandler.getInstance();
                 PostsResponse postsResponse = new PostsResponse(PostStore.getPosts());
                 postsResponse.setSourceIP(messageHandler.getLocalIP());
@@ -54,6 +35,21 @@ public class GossipInitiator {
             @Override
             public Response onResponseReceived(Response response) {
                 return null;
+            }
+        });
+
+        MessageHandler.getInstance().registerForReceiving(ResponseType.GOSSOK, new MessageListener() {
+            @Override
+            public Response onMessageReceived(Message message) {
+                return null;
+            }
+
+            @Override
+            public Response onResponseReceived(Response response) {
+                System.out.println("onResponseReceived GOSSOK");
+                Posts posts = ((PostsResponse) response).getPosts();
+                PostStore.merge(posts);
+                return response;
             }
         });
     }
@@ -101,10 +97,10 @@ public class GossipInitiator {
             }
         }
 
-        if(selectedNode == null){
+        if (selectedNode == null) {
             System.out.println("No nodes found for gossipping");
             return;
-        }else {
+        } else {
             System.out.println(selectedNode.toString() + " selected for gossiping");
         }
 
@@ -115,7 +111,7 @@ public class GossipInitiator {
         message.setSourcePort(handler.getLocalPort());
         message.setDestinationIP(selectedNode.getIp());
         message.setDestinationPort(selectedNode.getPort());
-//        handler.send(message);
+        handler.send(message);
         System.out.println("Gossip done with " + selectedNode.getNodeID());
 
         syncTimestamps.put(selectedNode, System.currentTimeMillis());

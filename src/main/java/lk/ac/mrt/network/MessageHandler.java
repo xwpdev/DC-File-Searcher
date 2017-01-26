@@ -1,9 +1,14 @@
 package lk.ac.mrt.network;
 
+import lk.ac.mrt.comment.PostsMessage;
+import lk.ac.mrt.comment.PostsResponse;
 import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.HashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -24,13 +29,6 @@ public class MessageHandler {
 
     private DatagramSocket datagramSocket;
 
-    public static MessageHandler getInstance() {
-        if (instance == null) {
-            instance = new MessageHandler();
-        }
-        return instance;
-    }
-
     public MessageHandler() {
         this.localIP = NetworkUtil.getIP();
         this.localPort = Integer.parseInt(PropertyProvider.getProperty("PORT"));
@@ -48,9 +46,95 @@ public class MessageHandler {
         }
     }
 
+    public static MessageHandler getInstance() {
+        if (instance == null) {
+            instance = new MessageHandler();
+        }
+        return instance;
+    }
+
+    public static Response handleResponse(String responseLine) {
+        int length = Integer.parseInt(responseLine.substring(0, MSG_LENGTH));
+        int startIndex = MSG_LENGTH + 1;
+        String unmarshallText = responseLine.substring(startIndex, length);
+
+        Response response = null;
+        if (unmarshallText.startsWith(ResponseType.ERROR.code())) {
+            response = new ErrorResponse();
+        } else if (unmarshallText.startsWith(ResponseType.REGISTER.code())) {
+            response = new RegisterResponse();
+        } else if (unmarshallText.startsWith(ResponseType.UNREGISTER.code())) {
+            response = new UnRegisterResponse();
+        } else if (unmarshallText.startsWith(ResponseType.JOIN.code())) {
+            response = new JoinResponse();
+        } else if (unmarshallText.startsWith(ResponseType.LEAVE.code())) {
+            response = new LeaveResponse();
+        } else if (unmarshallText.startsWith(ResponseType.SEARCH.code())) {
+            response = new SearchResponse();
+        } else if (unmarshallText.startsWith(ResponseType.LIVE.code())) {
+            response = new HeartbeatResponse();
+        } else if (unmarshallText.startsWith(ResponseType.GOSSOK.code())) {
+            response = new PostsResponse();
+        }
+
+        if (response != null) {
+            try {
+                response.unmarshall(unmarshallText);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (response == null) {
+            response = new ErrorResponse();
+            ((ErrorResponse) response).setValue("Unknown error");
+        }
+
+
+        return response;
+    }
+
+    public static Message handleMessage(String messageLine) {
+        int length = Integer.parseInt(messageLine.substring(0, MSG_LENGTH));
+        int startIndex = MSG_LENGTH + 1;
+        String unmarshallText = messageLine.substring(startIndex, length);
+
+        Message message = null;
+        if (unmarshallText.startsWith(MessageType.REGISTER.code())) {
+            message = new RegisterMessage();
+        } else if (unmarshallText.startsWith(MessageType.UNREGISTER.code())) {
+            message = new UnRegisterMessage();
+        } else if (unmarshallText.startsWith(MessageType.JOIN.code())) {
+            message = new JoinMessage();
+        } else if (unmarshallText.startsWith(MessageType.LEAVE.code())) {
+            message = new LeaveMessage();
+        } else if (unmarshallText.startsWith(MessageType.SEARCH.code()) && !unmarshallText.startsWith(ResponseType.SEARCH.code())) {
+            message = new SearchMessage();
+        } else if (unmarshallText.startsWith(MessageType.LIVE.code()) && !unmarshallText.startsWith(ResponseType.LIVE.code())) {
+            message = new HeartbeatMessage();
+        } else if (unmarshallText.startsWith(MessageType.GOSSIP.code())) {
+            message = new PostsMessage();
+        }
+
+        if (message != null) {
+            try {
+                message.unmarshall(unmarshallText);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return message;
+    }
+
+    public static String prepareForSending(Entity entity) {
+        String txt = entity.marshall();
+        return String.format("%04d %s", txt.length() + 5, txt);
+    }
+
     public String getLocalIP() {
         return localIP;
     }
+    // AHESH
 
     public void setLocalIP(String localIP) {
         this.localIP = localIP;
@@ -63,7 +147,7 @@ public class MessageHandler {
     public void setLocalPort(int localPort) {
         this.localPort = localPort;
     }
-    // AHESH
+
     /**
      * Send a UDP message
      * @param ipAddress
@@ -99,7 +183,7 @@ public class MessageHandler {
         if(msg.type != MessageType.REGISTER && msg.type != MessageType.UNREGISTER){
             //stop UDP listening to accept response
             final boolean listening = isListening();
-            final boolean needResponse = !(msg.type == MessageType.SEARCH || msg.type == MessageType.LIVE) ;
+            final boolean needResponse = !(msg.type == MessageType.SEARCH || msg.type == MessageType.LIVE || msg.type == MessageType.GOSSIP);
             if(listening && needResponse){
                 stopListening();
             }
@@ -213,75 +297,6 @@ public class MessageHandler {
         }
     }
 
-    public static Response handleResponse(String responseLine) {
-        int length = Integer.parseInt(responseLine.substring(0, MSG_LENGTH));
-        int startIndex = MSG_LENGTH + 1;
-        String unmarshallText = responseLine.substring(startIndex, length);
-
-        Response response = null;
-        if (unmarshallText.startsWith(ResponseType.ERROR.code())) {
-            response = new ErrorResponse();
-        } else if (unmarshallText.startsWith(ResponseType.REGISTER.code())) {
-            response = new RegisterResponse();
-        } else if (unmarshallText.startsWith(ResponseType.UNREGISTER.code())) {
-            response = new UnRegisterResponse();
-        } else if (unmarshallText.startsWith(ResponseType.JOIN.code())) {
-            response = new JoinResponse();
-        } else if (unmarshallText.startsWith(ResponseType.LEAVE.code())) {
-            response = new LeaveResponse();
-        } else if (unmarshallText.startsWith(ResponseType.SEARCH.code())) {
-            response = new SearchResponse();
-        } else if (unmarshallText.startsWith(ResponseType.LIVE.code())) {
-            response = new HeartbeatResponse();
-        }
-
-        if (response != null) {
-            try {
-                response.unmarshall(unmarshallText);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (response == null) {
-            response = new ErrorResponse();
-            ((ErrorResponse) response).setValue("Unknown error");
-        }
-
-
-        return response;
-    }
-
-    public static Message handleMessage(String messageLine) {
-        int length = Integer.parseInt(messageLine.substring(0, MSG_LENGTH));
-        int startIndex = MSG_LENGTH + 1;
-        String unmarshallText = messageLine.substring(startIndex, length);
-
-        Message message = null;
-        if (unmarshallText.startsWith(MessageType.REGISTER.code())) {
-            message = new RegisterMessage();
-        } else if (unmarshallText.startsWith(MessageType.UNREGISTER.code())) {
-            message = new UnRegisterMessage();
-        } else if (unmarshallText.startsWith(MessageType.JOIN.code())) {
-            message = new JoinMessage();
-        } else if (unmarshallText.startsWith(MessageType.LEAVE.code())) {
-            message = new LeaveMessage();
-        } else if (unmarshallText.startsWith(MessageType.SEARCH.code()) && !unmarshallText.startsWith(ResponseType.SEARCH.code())) {
-            message = new SearchMessage();
-        } else if (unmarshallText.startsWith(MessageType.LIVE.code()) && !unmarshallText.startsWith(ResponseType.LIVE.code())) {
-            message = new HeartbeatMessage();
-        }
-
-        if (message != null) {
-            try {
-                message.unmarshall(unmarshallText);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return message;
-    }
-
     /**
      * Open the port and listen
      *
@@ -310,7 +325,6 @@ public class MessageHandler {
         return (udpListener != null && udpListener.isRunning());
     }
 
-
     public void registerForReceiving(MessageType type, MessageListener listener) {
         registeredListeners.put(type.code(),listener);
     }
@@ -335,11 +349,6 @@ public class MessageHandler {
         } else {
             new Exception("Network IP or port not initialized").printStackTrace();
         }
-    }
-
-    public static String prepareForSending(Entity entity) {
-        String txt = entity.marshall();
-        return String.format("%04d %s", txt.length() + 5, txt);
     }
 
     public MessageListener getListener(MessageType type){

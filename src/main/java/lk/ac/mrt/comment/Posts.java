@@ -11,6 +11,7 @@ import java.util.List;
 public class Posts extends Entity {
 
     private List<File> fileList;
+    private long timestamp;
 
     public Posts(Posts anotherPost){
         if(anotherPost!= null && anotherPost.getFileList()!=null){
@@ -23,6 +24,7 @@ public class Posts extends Entity {
 
     public Posts(){
         fileList = new ArrayList<File>();
+        timestamp = 0;
     }
 
     @Override
@@ -40,6 +42,18 @@ public class Posts extends Entity {
             fileList = new ArrayList<File>();
         }
         return fileList;
+    }
+
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public void addFile(File file) {

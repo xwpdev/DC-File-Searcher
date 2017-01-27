@@ -9,7 +9,6 @@ import java.util.List;
 public class PostStore {
 
     private static Posts posts;
-    private static long timestamp;
 
     public PostStore(){
         posts = new Posts();
@@ -108,17 +107,7 @@ public class PostStore {
         List<Rank> rankList = comment.getRanks();
         List<Rank> temp = new ArrayList<Rank>(rankList);
         List<Rank> remoteRankList = remoteComment.getRanks();
-        for (Rank remoteRank: remoteRankList){
-            boolean hasRank = false;
-            for(Rank rank:rankList){
-                if (remoteRank.getSource().equals(rank.getSource())) {
-                    hasRank = true;
-                }
-            }
-            if(!hasRank){
-                temp.add(remoteRank);
-            }
-        }
+        mergeRankLists(rankList, temp, remoteRankList);
         comment.setRanks(temp);
 
     }
@@ -127,6 +116,11 @@ public class PostStore {
         List<Rank> rankList = file.getRanks();
         List<Rank> temp = new ArrayList<Rank>(rankList);
         List<Rank> remoteRankList = remoteFile.getRanks();
+        mergeRankLists(rankList, temp, remoteRankList);
+        file.setRanks(temp);
+    }
+
+    private static void mergeRankLists(List<Rank> rankList, List<Rank> temp, List<Rank> remoteRankList) {
         for (Rank remoteRank: remoteRankList){
             boolean hasRank = false;
             for(Rank rank:rankList){
@@ -138,17 +132,17 @@ public class PostStore {
                 temp.add(remoteRank);
             }
         }
-        file.setRanks(temp);
     }
 
     public static long getTimestampForUpdate() {
-        return ++timestamp;
+        long timestamp = getPosts().getTimestamp();
+        ++timestamp;
+        getPosts().setTimestamp(timestamp);
+        return timestamp;
     }
 
-    public static void updateTimestamp() {
-        //TODO iterate over all the entries and find maximum timestamp of them
-        long maxTime = 0;
-        timestamp = Math.max(maxTime, timestamp);
+    public static void updateTimestamp(long timestamp) {
+        getPosts().setTimestamp(Math.max(timestamp, getPosts().getTimestamp()));
     }
 
     public static void addComment(String id, Comment comment) {

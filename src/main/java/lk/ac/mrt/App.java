@@ -164,12 +164,12 @@ public class App
     }
 
     private static void handleAddComment(Scanner scanner) {
-        System.out.print("Enter file or comment ID you want to comment: (-1 to exit)");
+        System.out.print("Enter file or comment ID you want to comment (-1 to exit): ");
         String id = scanner.next();
         if ("-1".equals(id)) {
             return;
         }
-        System.out.print("Enter text: (-1 to exit)");
+        System.out.print("Enter text (-1 to exit): ");
         String body = scanner.next();
         if ("-1".equals(body)) {
             return;
@@ -181,12 +181,12 @@ public class App
     }
 
     private static void handleAddRating(Scanner scanner) {
-        System.out.print("Enter file or comment ID you want to rate: (-1 to exit)");
+        System.out.print("Enter file or comment ID you want to rate (-1 to exit): ");
         String id = scanner.next();
         if ("-1".equals(id)) {
             return;
         }
-        System.out.print("Enter rating between 0 to 10: (-1 to exit)");
+        System.out.print("Enter rating between 0 to 10 (-1 to exit): ");
         int rating = scanner.nextInt();
         if (rating == -1) {
             return;

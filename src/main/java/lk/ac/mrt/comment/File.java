@@ -58,4 +58,8 @@ public class File extends Entity {
     public void generateId(int timestamp, String source) {
         this.id = new Id(timestamp, source, "F", String.valueOf(fileName.hashCode()));
     }
+
+    public void setRanks(List<Rank> ranks) {
+        this.ranks = ranks;
+    }
 }

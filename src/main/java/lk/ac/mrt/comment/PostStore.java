@@ -118,7 +118,7 @@ public class PostStore {
                 temp.add(remoteRank);
             }
         }
-        rankList = temp;
+        comment.setRanks(temp);
 
     }
 
@@ -137,7 +137,7 @@ public class PostStore {
                 temp.add(remoteRank);
             }
         }
-        rankList = temp;
+        file.setRanks(temp);
     }
 
 }

@@ -43,11 +43,11 @@ public class PostStore {
 
 
     private static void mergeComments(File file, File remoteFile) {
-        boolean hasComment = false;
         List<Comment> commentList = file.getCommentList();
         List<Comment> temp = new ArrayList<Comment>(commentList);
         List<Comment> remoteCommentList = remoteFile.getCommentList();
         for (Comment remoteComment:remoteCommentList){
+            boolean hasComment = false;
             for(Comment comment:commentList){
                 if(comment.equals(remoteComment)){
                     hasComment = true;
@@ -81,11 +81,11 @@ public class PostStore {
     }
 
     private static void mergeReplyComments(Comment comment, Comment remoteComment){
-        boolean hasComment = false;
         List<Comment> commentList = comment.getComments();
         List<Comment> temp = new ArrayList<Comment>(commentList);
         List<Comment> remoteCommentList = remoteComment.getComments();
         for(Comment remoteReplyComment:remoteCommentList){
+            boolean hasComment = false;
             for(Comment replyComment:remoteCommentList){
                 if(replyComment.getId().equals(remoteReplyComment.getId())){
                     hasComment = true;
@@ -104,11 +104,11 @@ public class PostStore {
 
 
     private static void mergeRanks(Comment comment, Comment remoteComment) {
-        boolean hasRank = false;
         List<Rank> rankList = comment.getRanks();
         List<Rank> temp = new ArrayList<Rank>(rankList);
         List<Rank> remoteRankList = remoteComment.getRanks();
         for (Rank remoteRank: remoteRankList){
+            boolean hasRank = false;
             for(Rank rank:rankList){
                 if (remoteRank.getSource().equals(rank.getSource())) {
                     hasRank = true;
@@ -123,11 +123,11 @@ public class PostStore {
     }
 
     private static void mergeRanks(File file, File remoteFile) {
-        boolean hasRank = false;
         List<Rank> rankList = file.getRanks();
         List<Rank> temp = new ArrayList<Rank>(rankList);
         List<Rank> remoteRankList = remoteFile.getRanks();
         for (Rank remoteRank: remoteRankList){
+            boolean hasRank = false;
             for(Rank rank:rankList){
                 if (remoteRank.getSource().equals(rank.getSource())) {
                     hasRank = true;

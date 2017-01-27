@@ -70,4 +70,8 @@ public class Posts extends Entity {
 
         return sb.toString();
     }
+
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
 }

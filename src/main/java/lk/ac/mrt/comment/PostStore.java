@@ -22,10 +22,12 @@ public class PostStore {
     }
 
     public static void merge(Posts remotePosts){
-        Posts temp = new Posts(posts);
-        for(File remoteFile: remotePosts.getFileList()){
+        List<File> fileList = getPosts().getFileList();
+        List<File> remoteFileList = remotePosts.getFileList();
+        List<File> temp = new ArrayList<File>(fileList);
+        for(File remoteFile: remoteFileList){
             boolean hasFile = false;
-            for (File file : getPosts().getFileList()) {
+            for (File file : fileList) {
                 if(remoteFile.getId().equals(file.getId())){
                     hasFile = true;
                     mergeRanks(file,remoteFile);
@@ -35,10 +37,11 @@ public class PostStore {
 
             }
             if(!hasFile){
-                temp.addFile(remoteFile);
+                temp.add(remoteFile);
             }
         }
-        posts = temp;
+        getPosts().setFileList(temp);
+
     }
 
 

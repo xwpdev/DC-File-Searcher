@@ -16,7 +16,7 @@ import java.util.Scanner;
  * Hello world!
  *
  */
-public class App 
+public class App
 {
     public static void main( String[] args )
     {
@@ -55,14 +55,14 @@ public class App
 						handleSearch(scanner);
 						break;
 					case 6:
-						handleUpdateHops(scanner);
-						break;
+                        handleViewPosts();
+                        break;
 					case 7:
-						handleUpdateForward(scanner);
-						break;
+                        handleAddComment(scanner);
+                        break;
 					case 8:
-						recordStats();
-						break;
+                        handleAddRating(scanner);
+                        break;
 					default:
 
 				}
@@ -157,6 +157,46 @@ public class App
 		SearchHandler.getInstance().printAndResetCounts();
 	}
 
+    private static void handleViewPosts() {
+        System.out.println("======================Posts and ratings====================================");
+        String posts = PostStore.getPosts().viewPosts();
+        System.out.println(posts);
+    }
+
+    private static void handleAddComment(Scanner scanner) {
+        System.out.print("Enter file or comment ID you want to comment: (-1 to exit)");
+        String id = scanner.next();
+        if ("-1".equals(id)) {
+            return;
+        }
+        System.out.print("Enter text: (-1 to exit)");
+        String body = scanner.next();
+        if ("-1".equals(body)) {
+            return;
+        }
+        Comment comment = new Comment();
+        comment.setBody(body);
+        comment.generateId(PostStore.getTimestampForUpdate(), PropertyProvider.getProperty("USERNAME"));
+        PostStore.addComment(id, comment);
+    }
+
+    private static void handleAddRating(Scanner scanner) {
+        System.out.print("Enter file or comment ID you want to rate: (-1 to exit)");
+        String id = scanner.next();
+        if ("-1".equals(id)) {
+            return;
+        }
+        System.out.print("Enter rating between 0 to 10: (-1 to exit)");
+        int rating = scanner.nextInt();
+        if (rating == -1) {
+            return;
+        }
+        Rank rank = new Rank();
+        rank.setRank(rating);
+        rank.setSource(PropertyProvider.getProperty("USERNAME"));
+        PostStore.addRank(id, rank);
+    }
+
     private static void printMenu(){
         System.out.println("\n\n\n=======================================================================");
         System.out.println("1. Register");
@@ -164,9 +204,9 @@ public class App
         System.out.println("3. Leave");
         System.out.println("4. Print Routing Table");
         System.out.println("5. Search");
-        System.out.println("6. Change hop count");
-        System.out.println("7. Change forward count");
-        System.out.println("8. Print and reset stats");
+        System.out.println("6. View Posts and ratings");
+        System.out.println("7. Add comment");
+        System.out.println("8. Add rating");
         System.out.println("0. Exit");
         System.out.println("=======================================================================");
         System.out.println("Choose the number of your choice or press 0 to exit menu");

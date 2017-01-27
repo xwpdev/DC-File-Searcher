@@ -49,4 +49,11 @@ public class Posts extends Entity {
     public void removeFile(File file) {
         getFileList().remove(file);
     }
+
+    public String viewPosts() {
+        StringBuilder sb = new StringBuilder();
+
+
+        return sb.toString();
+    }
 }

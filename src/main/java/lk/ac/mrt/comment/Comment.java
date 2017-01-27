@@ -57,7 +57,7 @@ public class Comment extends Entity {
         this.comments = comments;
     }
 
-    public void generateId(int timestamp, String source) {
+    public void generateId(long timestamp, String source) {
         this.id = new Id(timestamp, source, "C", String.valueOf(body.hashCode()));
     }
 

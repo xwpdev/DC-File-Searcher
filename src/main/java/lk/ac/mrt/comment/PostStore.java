@@ -10,6 +10,10 @@ public class PostStore {
 
     private static Posts posts;
 
+    public PostStore(){
+        posts = new Posts();
+    }
+
     public static Posts getPosts() {
         if(posts == null){
             posts = new Posts();
@@ -18,6 +22,7 @@ public class PostStore {
     }
 
     public static void merge(Posts remotePosts){
+        Posts temp = new Posts(posts);
         for(File remoteFile: remotePosts.getFileList()){
             boolean hasFile = false;
             for (File file : getPosts().getFileList()) {
@@ -30,10 +35,10 @@ public class PostStore {
 
             }
             if(!hasFile){
-                getPosts().addFile(remoteFile);
+                temp.addFile(remoteFile);
             }
         }
-
+        posts = temp;
     }
 
 
@@ -58,37 +63,45 @@ public class PostStore {
     }
 
     private static void mergeComments(Comment comment, Comment remoteComment) {
+        if (comment.getId().equals(remoteComment.getId())) {
+            if (comment.getComments().isEmpty()) {
+                if (remoteComment.getComments().isEmpty()) {
+                    //ignore the remote comment
+                } else {
+                    comment.setComments(remoteComment.getComments());
+                }
+            } else {
+                if (remoteComment.getComments().isEmpty()) {
+                    // ignore the remote comment
+                } else {
+                    mergeReplyComments(comment, remoteComment);
+                }
+            }
+        }
+    }
+
+    private static void mergeReplyComments(Comment comment, Comment remoteComment){
         boolean hasComment = false;
         List<Comment> commentList = comment.getComments();
         List<Comment> temp = new ArrayList<Comment>(commentList);
         List<Comment> remoteCommentList = remoteComment.getComments();
-        for(Comment remotereplycomment: remoteCommentList){
-            for(Comment replyComment: commentList){
-                if (remotereplycomment.getId().equals(replyComment.getId())) {
+        for(Comment remoteReplyComment:remoteCommentList){
+            for(Comment replyComment:remoteCommentList){
+                if(replyComment.getId().equals(remoteReplyComment.getId())){
                     hasComment = true;
-                    List<Comment> childComments = replyComment.getComments();
-                    List<Comment> remoteChildComments = remotereplycomment.getComments();
-                    if(!remoteChildComments.isEmpty() && childComments.isEmpty()){
-                        replyComment.setComments(remoteChildComments);
-                        System.out.println("Merged:COMMENT:new size=" + remoteChildComments.size());
-                    }else if(!remoteChildComments.isEmpty() && !childComments.isEmpty()){
-                        for(Comment remoteChildComment: remoteChildComments){
-                            for(Comment chilcComment:childComments){
-                                if (remoteChildComment.equals(chilcComment)) {
-                                    mergeComments(chilcComment, remoteChildComment);
-                                }
-                            }
-                        }
-                    }
+                    mergeRanks(replyComment,remoteReplyComment);
+                    mergeComments(replyComment,remoteReplyComment);
                 }
             }
-            if (!hasComment){
-                temp.add(remotereplycomment);
+            if(!hasComment){
+                temp.add(remoteReplyComment);
             }
 
         }
-        commentList = temp;
+        comment.setComments(temp);
     }
+
+
 
     private static void mergeRanks(Comment comment, Comment remoteComment) {
         boolean hasRank = false;
@@ -121,8 +134,7 @@ public class PostStore {
                 }
             }
             if(!hasRank){
-                rankList.add(remoteRank);
-                remoteRankList.remove(remoteRank);
+                temp.add(remoteRank);
             }
         }
         rankList = temp;

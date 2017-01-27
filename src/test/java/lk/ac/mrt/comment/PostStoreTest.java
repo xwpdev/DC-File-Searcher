@@ -14,7 +14,6 @@ public class PostStoreTest extends TestCase {
         posts1 = new Posts();
 
         String source1 = "node1";
-        d
         String source2 = "node2";
         int timestamp = 0;
 

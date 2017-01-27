@@ -12,6 +12,19 @@ public class Posts extends Entity {
 
     private List<File> fileList;
 
+    public Posts(Posts anotherPost){
+        if(anotherPost!= null && anotherPost.getFileList()!=null){
+            this.fileList = new ArrayList<File>(anotherPost.getFileList());
+        }else{
+            fileList = new ArrayList<File>();
+        }
+
+    }
+
+    public Posts(){
+        fileList = new ArrayList<File>();
+    }
+
     @Override
     public String marshall() {
         throw new RuntimeException("Not implemented");

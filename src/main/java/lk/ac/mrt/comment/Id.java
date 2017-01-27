@@ -10,6 +10,7 @@ public class Id extends Entity {
     private String source;
     private String type;//F=file, C=Comment
     private String hash;
+    private String uid;
 
     public Id() {
     }
@@ -54,5 +55,16 @@ public class Id extends Entity {
 
     public String getHash() {
         return hash;
+    }
+
+    public String uid() {
+        return String.valueOf(hash + timestamp);
+    }
+
+    public String getUid() {
+        return uid();
+    }
+
+    public void setUid() {
     }
 }

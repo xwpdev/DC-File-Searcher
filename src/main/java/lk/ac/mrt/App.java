@@ -227,13 +227,13 @@ public class App
 		posts.addFile(file1);
 
 		Comment comment1 = new Comment();
-		comment1.setBody("First comment1");
-		comment1.generateId(++timestamp, source1);
+        comment1.setBody("First comment3");
+        comment1.generateId(++timestamp, source1);
 		file1.getCommentList().add(comment1);
 
 		Comment comment2 = new Comment();
-		comment2.setBody("Reply to first comment2");
-		comment2.generateId(++timestamp, source1);
+        comment2.setBody("Reply to first comment3");
+        comment2.generateId(++timestamp, source1);
 		comment1.getComments().add(comment2);
 
 		Rank rank1 = new Rank();

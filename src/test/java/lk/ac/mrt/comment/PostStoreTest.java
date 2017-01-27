@@ -105,4 +105,21 @@ public class PostStoreTest extends TestCase {
 
     }
 
+    public void testAddComment() throws Exception {
+        PostStore.merge(posts1);
+
+        String marshall = new PostsMessage(PostStore.getPosts()).marshall();
+        System.out.println(marshall);
+        assertEquals("GOSSIP null 0 {\"fileList\":[{\"id\":{\"timestamp\":0,\"source\":\"node1\",\"type\":\"F\",\"hash\":\"-1462237332\",\"uid\":\"-14622373320\"},\"fileName\":\"Harry Potter\",\"commentList\":[{\"parentId\":null,\"id\":{\"timestamp\":1,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"-833364785\",\"uid\":\"-8333647851\"},\"body\":\"First comment\",\"ranks\":[{\"source\":\"node1\",\"rank\":3}],\"comments\":[{\"parentId\":null,\"id\":{\"timestamp\":2,\"source\":\"node1\",\"type\":\"C\",\"hash\":\"783730336\",\"uid\":\"7837303362\"},\"body\":\"Reply to first comment\",\"ranks\":[{\"source\":\"node2\",\"rank\":5}],\"comments\":[]}]}],\"ranks\":[{\"source\":\"node1\",\"rank\":3}]}],\"timestamp\":0}",
+                marshall);
+
+        Comment comment1 = new Comment();
+        comment1.setBody("New comment");
+        comment1.generateId(10, "node10");
+//        PostStore.addComment("1387228415", comment1);
+        PostStore.addComment("7837303362", comment1);
+
+        System.out.println(new PostsMessage(PostStore.getPosts()).marshall());
+    }
+
 }

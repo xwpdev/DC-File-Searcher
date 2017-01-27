@@ -148,14 +148,65 @@ public class PostStore {
         getPosts().setTimestamp(Math.max(timestamp, getPosts().getTimestamp()));
     }
 
-    public static void addComment(String id, Comment comment) {
-        //TODO add comment for id
-        throw new RuntimeException("Not implemented");
+    public static String addComment(String uid, Comment newComment) {
+        if (uid == null) {
+            return "Invalid ID";
+        }
+        //add comment for uid
+        Posts posts = getPosts();
+        for (File file : posts.getFileList()) {
+            if (uid.equals(file.getId().uid())) {
+                file.getCommentList().add(newComment);
+                return "Comment added to " + file.getFileName();
+            }
+            for (Comment comment1 : file.getCommentList()) {
+                Comment temp = searchComments(uid, comment1);
+                if (temp != null) {
+                    temp.getComments().add(newComment);
+                    return "Comment added to comment ->" + temp.getId().getSource() + ":" + temp.getBody();
+                }
+            }
+
+        }
+
+        return "No file or comment found for the given ID :" + uid;
     }
 
-    public static void addRank(String id, Rank rank) {
-        //TODO add rank for id
-        throw new RuntimeException("Not implemented");
+    private static Comment searchComments(String uid, Comment comment) {
+        if (uid.equals(comment.getId().uid())) {
+            return comment;
+        } else {
+            for (Comment comment1 : comment.getComments()) {
+                Comment temp = searchComments(uid, comment1);
+                if (temp != null) {
+                    return temp;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String addRank(String uid, Rank rank) {
+        //add rank for id
+        if (uid == null) {
+            return "Invalid ID";
+        }
+        //add comment for uid
+        Posts posts = getPosts();
+        for (File file : posts.getFileList()) {
+            if (uid.equals(file.getId().uid())) {
+                file.getRanks().add(rank);
+                return "Rating added to " + file.getFileName();
+            }
+            for (Comment comment1 : file.getCommentList()) {
+                Comment temp = searchComments(uid, comment1);
+                if (temp != null) {
+                    temp.getRanks().add(rank);
+                    return "Rating added to comment ->" + temp.getId().getSource() + ":" + temp.getBody();
+                }
+            }
+        }
+        return "No file or comment found for the given ID :" + uid;
     }
 
 }

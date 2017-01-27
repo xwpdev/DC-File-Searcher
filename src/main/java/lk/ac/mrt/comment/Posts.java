@@ -44,9 +44,6 @@ public class Posts extends Entity {
         return fileList;
     }
 
-    public void setFileList(List<File> fileList) {
-        this.fileList = fileList;
-    }
 
     public long getTimestamp() {
         return timestamp;
@@ -74,4 +71,5 @@ public class Posts extends Entity {
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
     }
+
 }

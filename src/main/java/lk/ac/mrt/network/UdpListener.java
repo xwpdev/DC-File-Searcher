@@ -1,5 +1,7 @@
 package lk.ac.mrt.network;
 
+import lk.ac.mrt.common.Constants;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -25,7 +27,7 @@ public class UdpListener extends Thread {
 //            }
 
             while(running){
-                byte[] buffer = new byte[8192];
+                byte[] buffer = new byte[Constants.MESSAGE_LENGTH];
                 DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
                 try {
                     MessageHandler.getInstance().getDatagramSocket().receive(incomingPacket);

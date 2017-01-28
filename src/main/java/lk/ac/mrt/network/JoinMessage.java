@@ -17,7 +17,12 @@ public class JoinMessage extends Message {
     @Override
     public void unmarshall(String messsageData) {
         String[] splits = messsageData.split(String.valueOf(WHITESPACE));
-        setSourceIP(splits[1]);
-        setSourcePort(Integer.parseInt(splits[2]));
+        if (splits.length == 2) {
+            setSourceIP(splits[0]);
+            setSourcePort(Integer.parseInt(splits[1]));
+        } else {
+            setSourceIP(splits[1]);
+            setSourcePort(Integer.parseInt(splits[2]));
+        }
     }
 }

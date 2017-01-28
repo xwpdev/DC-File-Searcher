@@ -20,7 +20,7 @@ public class GossipInitiator {
         MessageHandler.getInstance().registerForReceiving(MessageType.GOSSIP, new MessageListener() {
             @Override
             public Response onMessageReceived(Message message) {
-                System.out.println("onMessageReceived GOSSIP");
+                //System.out.println("onMessageReceived GOSSIP");
                 Posts posts = ((PostsMessage) message).getPosts();
                 PostStore.merge(posts);
                 //TODO update source IP is synced
@@ -46,7 +46,7 @@ public class GossipInitiator {
 
             @Override
             public Response onResponseReceived(Response response) {
-                System.out.println("onResponseReceived GOSSOK");
+                //System.out.println("onResponseReceived GOSSOK");
                 Posts posts = ((PostsResponse) response).getPosts();
                 PostStore.merge(posts);
                 return response;
@@ -101,7 +101,7 @@ public class GossipInitiator {
             System.out.println("No nodes found for gossipping");
             return;
         } else {
-            System.out.println(selectedNode.toString() + " selected for gossiping");
+            //System.out.println(selectedNode.toString() + " selected for gossiping");
         }
 
         //share comment store
@@ -112,7 +112,7 @@ public class GossipInitiator {
         message.setDestinationIP(selectedNode.getIp());
         message.setDestinationPort(selectedNode.getPort());
         handler.send(message);
-        System.out.println("Gossip done with " + selectedNode.getNodeID());
+        //System.out.println("Gossip done with " + selectedNode.getNodeID());
 
         syncTimestamps.put(selectedNode, System.currentTimeMillis());
     }

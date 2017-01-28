@@ -28,11 +28,11 @@ public class PostStore {
         for(File remoteFile: remoteFileList){
             boolean hasFile = false;
             for (File file : fileList) {
-                if(remoteFile.getId().equals(file.getId())){
+                if (remoteFile.equals(file)) {
                     hasFile = true;
                     mergeRanks(file,remoteFile);
                     mergeComments(file,remoteFile);
-                    System.out.println("Merged:FILE:" + file.getFileName());
+                    //System.out.println("Merged:FILE:" + file.getFileName());
                 }
 
             }
@@ -89,7 +89,7 @@ public class PostStore {
         List<Comment> remoteCommentList = remoteComment.getComments();
         for(Comment remoteReplyComment:remoteCommentList){
             boolean hasComment = false;
-            for(Comment replyComment:remoteCommentList){
+            for (Comment replyComment : commentList) {
                 if(replyComment.getId().equals(remoteReplyComment.getId())){
                     hasComment = true;
                     mergeRanks(replyComment,remoteReplyComment);

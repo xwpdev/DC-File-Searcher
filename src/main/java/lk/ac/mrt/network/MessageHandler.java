@@ -2,6 +2,7 @@ package lk.ac.mrt.network;
 
 import lk.ac.mrt.comment.PostsMessage;
 import lk.ac.mrt.comment.PostsResponse;
+import lk.ac.mrt.common.Constants;
 import lk.ac.mrt.common.NetworkUtil;
 import lk.ac.mrt.common.PropertyProvider;
 
@@ -204,22 +205,30 @@ public class MessageHandler {
             }
 
             if(needResponse) {
-                byte[] buffer = new byte[1024];
-                DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
-
                 try {
-                    datagramSocket.setSoTimeout(10000);
-                    datagramSocket.receive(incomingPacket);
+                    boolean hasErrors = false;
+                    Response response = null;
+                    do {
+                        byte[] buffer = new byte[Constants.MESSAGE_LENGTH];
+                        DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
 
-                    InetAddress ipAddress = incomingPacket.getAddress();
-                    int port = incomingPacket.getPort();
+                        datagramSocket.setSoTimeout(10000);
+                        datagramSocket.receive(incomingPacket);
 
-                    String tempMsg = new String(buffer);
-                    int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
+                        InetAddress ipAddress = incomingPacket.getAddress();
+                        int port = incomingPacket.getPort();
 
-                    String realMsg = tempMsg.substring(0, length);
-                    System.out.println("Listener received: " + realMsg + " from " + ipAddress + ":" + port);
-                    return MessageHandler.getInstance().handleResponse(realMsg);
+                        String tempMsg = new String(buffer);
+                        int length = Integer.parseInt(tempMsg.substring(0, MessageHandler.MSG_LENGTH));
+
+                        String realMsg = tempMsg.substring(0, length);
+                        System.out.println("Listener received: " + realMsg + " from " + ipAddress + ":" + port);
+                        response = MessageHandler.getInstance().handleResponse(realMsg);
+                        if (msg instanceof JoinMessage && !(response instanceof JoinResponse)) {
+                            hasErrors = true;
+                        }
+                    } while (hasErrors);
+                    return response;
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

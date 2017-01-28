@@ -28,15 +28,6 @@ public class SearchHandler
     private int countAnswered;
 
 
-	public static SearchHandler getInstance()
-	{
-		if ( instance == null )
-		{
-			instance = new SearchHandler();
-		}
-		return instance;
-	}
-
 	public SearchHandler()
 	{
 		initFilesList();
@@ -44,6 +35,12 @@ public class SearchHandler
 		initSearching();
 	}
 
+    public static SearchHandler getInstance() {
+        if (instance == null) {
+            instance = new SearchHandler();
+        }
+        return instance;
+    }
 
 	private void initSearching()
 	{
@@ -259,4 +256,8 @@ public class SearchHandler
 		countForwarded=0;
 		countAnswered=0;
 	}
+
+    public FilesList getFilesList() {
+        return filesList;
+    }
 }

@@ -1,7 +1,9 @@
 package lk.ac.mrt.comment;
 
+import lk.ac.mrt.common.StringUtils;
 import lk.ac.mrt.network.Entity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,9 @@ public class Posts extends Entity {
         return fileList;
     }
 
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
 
     public long getTimestamp() {
         return timestamp;
@@ -63,13 +68,13 @@ public class Posts extends Entity {
 
     public String viewPosts() {
         StringBuilder sb = new StringBuilder();
-
+        try {
+            sb.append(StringUtils.toJson(this, true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return sb.toString();
-    }
-
-    public void setFileList(List<File> fileList) {
-        this.fileList = fileList;
     }
 
 }

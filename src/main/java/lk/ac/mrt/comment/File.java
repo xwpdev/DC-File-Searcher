@@ -62,4 +62,14 @@ public class File extends Entity {
     public void generateId(long timestamp, String source) {
         this.id = new Id(timestamp, source, "F", String.valueOf(fileName.hashCode()));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof File) {
+            File other = (File) obj;
+            Id otherId = other.getId();
+            return getId().getType().equals(otherId.getType()) && getId().getHash().equals(otherId.getHash());
+        }
+        return false;
+    }
 }

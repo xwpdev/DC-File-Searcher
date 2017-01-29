@@ -5,7 +5,7 @@ import lk.ac.mrt.network.Entity;
 /**
  * Created by chamika on 1/19/17.
  */
-public class Id extends Entity {
+public class Id extends Entity implements Viewable {
     private long timestamp;
     private String source;
     private String type;//F=file, C=Comment
@@ -58,7 +58,7 @@ public class Id extends Entity {
     }
 
     public String uid() {
-        return String.valueOf(hash + timestamp);
+        return String.valueOf(Math.abs(Integer.parseInt(hash)) + timestamp);
     }
 
     public String getUid() {
@@ -66,5 +66,11 @@ public class Id extends Entity {
     }
 
     public void setUid() {
+    }
+
+
+    @Override
+    public String generateView() {
+        return "ID        : " + uid();
     }
 }

@@ -1,14 +1,17 @@
 package lk.ac.mrt.comment;
 
+import lk.ac.mrt.common.StringUtils;
 import lk.ac.mrt.network.Entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by chamika on 1/19/17.
  */
-public class Comment extends Entity {
+public class Comment extends Entity implements Viewable {
     private Id parentId;
     private Id id;
     private String body;
@@ -77,5 +80,31 @@ public class Comment extends Entity {
             return id.equals(((Comment) obj).id);
         }
         return false;
+    }
+
+    @Override
+    public String generateView() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getId().generateView()).append(Viewable.NEW_LINE);
+        sb.append("Author    : ").append(getId().getSource()).append(Viewable.NEW_LINE);
+        sb.append("Comment   : ").append(body).append(Viewable.NEW_LINE);
+        StringUtils.generateRating(sb, ranks);
+        sb.append(Viewable.NEW_LINE);
+        sb.append("Replies   : ").append(Viewable.NEW_LINE);
+        if (getComments().size() == 0) {
+            sb.append(" -- Not replies --").append(Viewable.NEW_LINE);
+        } else {
+            ArrayList<Comment> tempComments = new ArrayList<Comment>(getComments());
+            Collections.sort(tempComments, new Comparator<Comment>() {
+                @Override
+                public int compare(Comment o1, Comment o2) {
+                    return (int) (o1.getId().getTimestamp() - o2.getId().getTimestamp());
+                }
+            });
+            // add tab character and generate
+            StringUtils.generateCommentListView(sb, tempComments);
+        }
+
+        return sb.toString();
     }
 }

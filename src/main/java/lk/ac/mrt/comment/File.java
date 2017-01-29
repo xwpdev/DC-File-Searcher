@@ -1,14 +1,17 @@
 package lk.ac.mrt.comment;
 
+import lk.ac.mrt.common.StringUtils;
 import lk.ac.mrt.network.Entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by chamika on 1/24/17.
  */
-public class File extends Entity {
+public class File extends Entity implements Viewable {
 
     private Id id;
     private String fileName;
@@ -71,5 +74,29 @@ public class File extends Entity {
             return getId().getType().equals(otherId.getType()) && getId().getHash().equals(otherId.getHash());
         }
         return false;
+    }
+
+    @Override
+    public String generateView() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getId().generateView()).append(Viewable.NEW_LINE);
+        sb.append("File Name : ").append(fileName).append(Viewable.NEW_LINE);
+        StringUtils.generateRating(sb, ranks);
+        sb.append(Viewable.NEW_LINE);
+        sb.append("Comments  : ").append(Viewable.NEW_LINE);
+        if (getCommentList().size() == 0) {
+            sb.append(" -- No comments --").append(Viewable.NEW_LINE);
+        } else {
+            ArrayList<Comment> tempComments = new ArrayList<Comment>(getCommentList());
+            Collections.sort(tempComments, new Comparator<Comment>() {
+                @Override
+                public int compare(Comment o1, Comment o2) {
+                    return (int) (o1.getId().getTimestamp() - o2.getId().getTimestamp());
+                }
+            });
+            // add tab character and generate
+            StringUtils.generateCommentListView(sb, tempComments);
+        }
+        return sb.toString();
     }
 }

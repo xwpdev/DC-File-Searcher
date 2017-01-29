@@ -32,7 +32,13 @@ public class App {
         int choice = 0;
         do {
             try {
-                choice = scanner.nextInt();
+                String input = scanner.nextLine();
+                try {
+                    choice = Integer.parseInt(input);
+                } catch (Exception e) {
+                    System.out.println("Invalid input");
+                    choice = -1;
+                }
                 switch (choice) {
                     case 1:
                         handleRegister();
@@ -183,7 +189,13 @@ public class App {
             return;
         }
         System.out.print("Enter rating between 0 to 10 (-1 to exit): ");
-        int rating = scanner.nextInt();
+        String input = scanner.nextLine();
+        int rating = -1;
+        try {
+            rating = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Abort adding rate");
+        }
         if (rating == -1) {
             return;
         }

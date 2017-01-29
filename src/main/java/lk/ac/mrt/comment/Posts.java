@@ -1,16 +1,14 @@
 package lk.ac.mrt.comment;
 
-import lk.ac.mrt.common.StringUtils;
 import lk.ac.mrt.network.Entity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by chamika on 1/19/17.
  */
-public class Posts extends Entity {
+public class Posts extends Entity implements Viewable {
 
     private List<File> fileList;
     private long timestamp;
@@ -67,14 +65,19 @@ public class Posts extends Entity {
     }
 
     public String viewPosts() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            sb.append(StringUtils.toJson(this, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
+        return generateView();
     }
 
+    @Override
+    public String generateView() {
+        StringBuilder sb = new StringBuilder();
+        List<File> fileList = getFileList();
+        for (File file : fileList) {
+            sb.append(file.generateView());
+            sb.append(NEW_LINE);
+            sb.append("-----------------------------");
+            sb.append(NEW_LINE);
+        }
+        return sb.toString();
+    }
 }

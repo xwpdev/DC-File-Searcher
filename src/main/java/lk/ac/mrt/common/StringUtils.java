@@ -44,7 +44,7 @@ public class StringUtils {
             String view = tempComment.generateView();
             String[] split = view.split(Viewable.NEW_LINE);
             for (String s : split) {
-                sb.append("\t");
+                sb.append("           ");
                 sb.append(s);
                 sb.append(Viewable.NEW_LINE);
             }
@@ -55,7 +55,7 @@ public class StringUtils {
         sb.append("Rating    : ");
         int rating = RankCalculator.calculateAverageRank(ranks);
         if (rating == -1) {
-            sb.append(" -- Not rated --");
+            sb.append("-- Not rated --");
         } else {
             sb.append(rating);
             sb.append(" (");

@@ -58,7 +58,7 @@ public class Id extends Entity implements Viewable {
     }
 
     public String uid() {
-        return String.valueOf(Math.abs(Integer.parseInt(hash)) + timestamp);
+        return Integer.toHexString((int) (Math.abs(Integer.parseInt(hash)) + timestamp));
     }
 
     public String getUid() {

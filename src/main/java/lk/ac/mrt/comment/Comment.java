@@ -90,10 +90,11 @@ public class Comment extends Entity implements Viewable {
         sb.append("Comment   : ").append(body).append(Viewable.NEW_LINE);
         StringUtils.generateRating(sb, ranks);
         sb.append(Viewable.NEW_LINE);
-        sb.append("Replies   : ").append(Viewable.NEW_LINE);
+        sb.append("Replies   : ");
         if (getComments().size() == 0) {
-            sb.append(" -- Not replies --").append(Viewable.NEW_LINE);
+            sb.append("-- No replies --").append(Viewable.NEW_LINE);
         } else {
+            sb.append(Viewable.NEW_LINE);
             ArrayList<Comment> tempComments = new ArrayList<Comment>(getComments());
             Collections.sort(tempComments, new Comparator<Comment>() {
                 @Override
@@ -104,6 +105,7 @@ public class Comment extends Entity implements Viewable {
             // add tab character and generate
             StringUtils.generateCommentListView(sb, tempComments);
         }
+        sb.append("-----------------------------").append(Viewable.NEW_LINE);
 
         return sb.toString();
     }

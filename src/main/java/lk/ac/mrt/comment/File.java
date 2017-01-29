@@ -79,14 +79,16 @@ public class File extends Entity implements Viewable {
     @Override
     public String generateView() {
         StringBuilder sb = new StringBuilder();
+        sb.append("File").append(Viewable.NEW_LINE);
         sb.append(getId().generateView()).append(Viewable.NEW_LINE);
         sb.append("File Name : ").append(fileName).append(Viewable.NEW_LINE);
         StringUtils.generateRating(sb, ranks);
         sb.append(Viewable.NEW_LINE);
-        sb.append("Comments  : ").append(Viewable.NEW_LINE);
+        sb.append("Comments  : ");
         if (getCommentList().size() == 0) {
-            sb.append(" -- No comments --").append(Viewable.NEW_LINE);
+            sb.append("-- No comments --").append(Viewable.NEW_LINE);
         } else {
+            sb.append(Viewable.NEW_LINE);
             ArrayList<Comment> tempComments = new ArrayList<Comment>(getCommentList());
             Collections.sort(tempComments, new Comparator<Comment>() {
                 @Override

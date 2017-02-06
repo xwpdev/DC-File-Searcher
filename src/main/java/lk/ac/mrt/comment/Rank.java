@@ -6,7 +6,7 @@ import lk.ac.mrt.network.Entity;
  * Created by chamika on 1/19/17.
  */
 public class Rank extends Entity {
-    private String source;
+    private Id id;
     private int rank;
 
     @Override
@@ -19,12 +19,8 @@ public class Rank extends Entity {
         throw new RuntimeException("Not implemented");
     }
 
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
+    public void generateId(long timestamp, String source) {
+        this.id = new Id(timestamp, source, "R", null);
     }
 
     public int getRank() {
@@ -33,5 +29,13 @@ public class Rank extends Entity {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public void setId(Id id) {
+        this.id = id;
     }
 }

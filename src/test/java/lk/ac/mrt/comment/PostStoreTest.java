@@ -24,7 +24,7 @@ public class PostStoreTest extends TestCase {
 
         Rank rankf1 = new Rank();
         rankf1.setRank(3);
-        rankf1.setSource(source1);
+        rankf1.generateId(++timestamp, source1);
         file1.getRanks().add(rankf1);
 
         Comment comment1 = new Comment();
@@ -39,12 +39,12 @@ public class PostStoreTest extends TestCase {
 
         Rank rank1 = new Rank();
         rank1.setRank(3);
-        rank1.setSource(source1);
+        rank1.generateId(++timestamp, source1);
         comment1.getRanks().add(rank1);
 
         Rank rank2 = new Rank();
         rank2.setRank(5);
-        rank2.setSource(source2);
+        rank2.generateId(++timestamp, source2);
         comment2.getRanks().add(rank2);
 
         // 2nd node post
@@ -58,7 +58,7 @@ public class PostStoreTest extends TestCase {
 
         Rank rankf2 = new Rank();
         rankf2.setRank(7);
-        rankf2.setSource(source1);
+        rankf2.generateId(++timestamp, source1);
         file2.getRanks().add(rankf2);
 
         Comment comment3 = new Comment();
@@ -78,12 +78,12 @@ public class PostStoreTest extends TestCase {
 
         Rank rank3 = new Rank();
         rank3.setRank(1);
-        rank3.setSource(source1);
+        rank3.generateId(++timestamp, source1);
         comment3.getRanks().add(rank3);
 
         Rank rank4 = new Rank();
         rank4.setRank(5);
-        rank4.setSource(source2);
+        rank4.generateId(++timestamp, source2);
         comment5.getRanks().add(rank4);
 
     }

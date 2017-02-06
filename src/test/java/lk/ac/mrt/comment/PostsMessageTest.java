@@ -35,12 +35,12 @@ public class PostsMessageTest extends TestCase {
 
         Rank rank1 = new Rank();
         rank1.setRank(3);
-        rank1.setSource(source1);
+        rank1.generateId(++timestamp, source1);
         comment2.getRanks().add(rank1);
 
         Rank rank2 = new Rank();
         rank2.setRank(5);
-        rank2.setSource(source2);
+        rank2.generateId(++timestamp, source2);
         comment2.getRanks().add(rank2);
 
     }

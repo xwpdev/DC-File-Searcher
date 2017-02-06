@@ -127,8 +127,12 @@ public class PostStore {
         for (Rank remoteRank: remoteRankList){
             boolean hasRank = false;
             for(Rank rank:rankList){
-                if (remoteRank.getSource().equals(rank.getSource())) {
+                if (remoteRank.getId().getSource().equals(rank.getId().getSource())) {
                     hasRank = true;
+                    if (remoteRank.getId().getTimestamp() > rank.getId().getTimestamp()) {
+                        rank.setRank(remoteRank.getRank());
+                        rank.setId(remoteRank.getId());
+                    }
                 }
             }
             if(!hasRank){

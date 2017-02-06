@@ -201,7 +201,7 @@ public class App {
         }
         Rank rank = new Rank();
         rank.setRank(rating);
-        rank.setSource(PropertyProvider.getProperty("USERNAME"));
+        rank.generateId(PostStore.getTimestampForUpdate(), PropertyProvider.getProperty("USERNAME"));
         String s = PostStore.addRank(id, rank);
         System.out.println(s);
     }

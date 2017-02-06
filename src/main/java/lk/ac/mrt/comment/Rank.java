@@ -20,7 +20,7 @@ public class Rank extends Entity {
     }
 
     public void generateId(long timestamp, String source) {
-        this.id = new Id(timestamp, source, "R", null);
+        this.id = new Id(timestamp, source, "R", String.valueOf(timestamp));
     }
 
     public int getRank() {

@@ -3,6 +3,7 @@ package lk.ac.mrt;
 import lk.ac.mrt.comment.*;
 import lk.ac.mrt.common.Constants;
 import lk.ac.mrt.common.PropertyProvider;
+import lk.ac.mrt.common.StringUtils;
 import lk.ac.mrt.network.MessageHandler;
 import lk.ac.mrt.routing.HeatbeatChecker;
 import lk.ac.mrt.routing.Node;
@@ -10,6 +11,7 @@ import lk.ac.mrt.routing.Router;
 import lk.ac.mrt.search.FilesList;
 import lk.ac.mrt.search.SearchHandler;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -64,6 +66,8 @@ public class App {
                     case 8:
                         handleAddRating(scanner);
                         break;
+                    case 9:
+                        showData();
                     default:
 
                 }
@@ -206,6 +210,14 @@ public class App {
         System.out.println(s);
     }
 
+    private static void showData() {
+        try {
+            System.out.println("Current data:\n" + StringUtils.toJson(PostStore.getPosts(), true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void printMenu() {
         System.out.println("\n\n\n=======================================================================");
         System.out.println("1. Register");
@@ -216,6 +228,7 @@ public class App {
         System.out.println("6. View Posts and ratings");
         System.out.println("7. Add comment");
         System.out.println("8. Add rating");
+        System.out.println("9. Show raw data");
         System.out.println("0. Exit");
         System.out.println("=======================================================================");
         System.out.println("Choose the number of your choice or press 0 to exit menu");

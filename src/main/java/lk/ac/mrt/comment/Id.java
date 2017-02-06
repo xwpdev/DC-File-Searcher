@@ -1,5 +1,6 @@
 package lk.ac.mrt.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lk.ac.mrt.network.Entity;
 
 /**
@@ -10,6 +11,7 @@ public class Id extends Entity implements Viewable {
     private String source;
     private String type;//F=file, C=Comment
     private String hash;
+    @JsonIgnore
     private String uid;
 
     public Id() {

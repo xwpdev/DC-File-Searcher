@@ -65,4 +65,22 @@ public class Node {
                 ", heartbeats=" + heartbeats +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Node node = (Node) o;
+
+        if (port != node.port) return false;
+        return ip.equals(node.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ip.hashCode();
+        result = 31 * result + port;
+        return result;
+    }
 }

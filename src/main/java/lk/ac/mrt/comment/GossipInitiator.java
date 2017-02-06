@@ -29,6 +29,16 @@ public class GossipInitiator {
                 postsResponse.setSourceIP(messageHandler.getLocalIP());
                 postsResponse.setSourcePort(messageHandler.getLocalPort());
                 postsResponse.copyReturnData(message);
+
+
+                List<Node> allNodes = Router.getInstance().getAllNodes();
+                for (Node node : allNodes) {
+                    if (node.getIp().equals(message.getSourceIP()) && node.getPort() == message.getSourcePort()) {
+                        syncTimestamps.put(node, System.currentTimeMillis());
+                        break;
+                    }
+                }
+
                 return postsResponse;
             }
 

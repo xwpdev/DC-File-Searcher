@@ -42,6 +42,7 @@ public class PostStore {
         }
         getPosts().setFileList(temp);
 
+        updateTimestamp(remotePosts.getTimestamp());
     }
 
 

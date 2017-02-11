@@ -23,14 +23,13 @@ public class GossipInitiator {
                 //System.out.println("onMessageReceived GOSSIP");
                 Posts posts = ((PostsMessage) message).getPosts();
                 PostStore.merge(posts);
-                //TODO update source IP is synced
                 MessageHandler messageHandler = MessageHandler.getInstance();
                 PostsResponse postsResponse = new PostsResponse(PostStore.getPosts());
                 postsResponse.setSourceIP(messageHandler.getLocalIP());
                 postsResponse.setSourcePort(messageHandler.getLocalPort());
                 postsResponse.copyReturnData(message);
 
-
+                //update source IP is synced
                 List<Node> allNodes = Router.getInstance().getAllNodes();
                 for (Node node : allNodes) {
                     if (node.getIp().equals(message.getSourceIP()) && node.getPort() == message.getSourcePort()) {
@@ -81,7 +80,7 @@ public class GossipInitiator {
             public void run() {
                 sendGossip();
             }
-        }, 0, Long.parseLong(PropertyProvider.getProperty("GOSSIP_INTERVAL")));
+        }, Long.parseLong(PropertyProvider.getProperty("GOSSIP_DELAY")), Long.parseLong(PropertyProvider.getProperty("GOSSIP_INTERVAL")));
     }
 
     public void stopGossiping() {
